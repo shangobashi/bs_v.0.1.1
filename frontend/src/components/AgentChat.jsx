@@ -449,20 +449,7 @@ function AgentChat() {
               )}
             </div>
 
-            <div className="control-group">
-              <label htmlFor="provider">Provider:</label>
-              <select
-                id="provider"
-                value={provider}
-                onChange={(e) => setProvider(e.target.value)}
-                disabled={loading}
-                style={{ width: '180px' }}
-              >
-                <option value="claude">Claude 4.5 Sonnet</option>
-                <option value="openai">GPT-5.1</option>
-                <option value="gemini">Gemini 3 Pro</option>
-              </select>
-            </div>
+
 
             <div className="control-group">
               <label>
@@ -494,6 +481,20 @@ function AgentChat() {
           )}
 
           <div className="header-actions" style={{ display: 'flex', gap: '0.5rem', marginLeft: 'auto', flexDirection: 'column', alignItems: 'flex-end' }}>
+            <div className="control-group" style={{ marginBottom: '0.5rem' }}>
+              <label htmlFor="provider" style={{ marginRight: '0.5rem' }}>Provider:</label>
+              <select
+                id="provider"
+                value={provider}
+                onChange={(e) => setProvider(e.target.value)}
+                disabled={loading}
+                style={{ width: '180px' }}
+              >
+                <option value="claude">Claude 4.5 Sonnet</option>
+                <option value="openai">GPT-5.1</option>
+                <option value="gemini">Gemini 3 Pro</option>
+              </select>
+            </div>
             <button
               className="theme-toggle"
               onClick={clearChat}
