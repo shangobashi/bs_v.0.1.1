@@ -1290,6 +1290,10 @@
   .clear-chat-btn {
     width: 100% !important;
   }
+
+  .clear-chat-btn .theme-label {
+    display: inline-block !important;
+  }
 }
 
 .header-actions {
