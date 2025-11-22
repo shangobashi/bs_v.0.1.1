@@ -1,0 +1,69 @@
+{
+  "session_id": "SESSION-1763691921",
+  "created_at": 1763691921.0396097,
+  "updated_at": 1763691921.044338,
+  "user_context": {
+    "primary_need": "software_development",
+    "secondary_needs": [],
+    "organization_name": "ArtifactTest Corp",
+    "organization_size": "Startup",
+    "organization_stage": "Seed",
+    "industry": "Tech",
+    "current_situation": "Testing artifact retrieval."
+  },
+  "activation_plan": {
+    "session_id": "SESSION-1763691921",
+    "organization": {
+      "name": "ArtifactTest Corp",
+      "industry": "Tech",
+      "size": "Startup",
+      "stage": "Seed"
+    },
+    "situation_summary": "Testing artifact retrieval.",
+    "activated_swarms": [
+      {
+        "name": "BluePadsLabs",
+        "reason": "Primary need: Software Development",
+        "agent_count": 12
+      }
+    ],
+    "griot_message": "I have listened deeply and I see your path clearly.\n\nFor ArtifactTest Corp, I am activating the following teams to walk alongside you:\n\nEngineering & Architecture\n\nThese teams bring the expertise you need. They understand your situation,\nand they are committed to your success. Remember: \"I am because we are.\"\n\nYou are never alone on this journey. These swarms form the collective strength\nneeded to help you achieve your vision.\n\nYour activation begins now.",
+    "next_steps": [
+      "Review your activation plan below",
+      "Meet your dedicated teams",
+      "Begin your engagement",
+      "Monitor progress and adjust as needed"
+    ]
+  },
+  "artifacts": {
+    "project.json": {
+      "config_type": "project",
+      "generated_at": 1763691921.039601,
+      "project_details": {
+        "name": "ArtifactTest Corp Tech Initiative",
+        "type": "Software Development",
+        "status": "Planning"
+      },
+      "tech_stack": {
+        "recommended": [
+          "TBD"
+        ],
+        "constraints": []
+      },
+      "architecture": {
+        "style": "TBD",
+        "scalability_requirement": "Startup"
+      },
+      "development_plan": {
+        "phases": [
+          "Discovery",
+          "Design",
+          "Implementation",
+          "Testing",
+          "Deployment"
+        ]
+      }
+    }
+  },
+  "chat_history": []
+}

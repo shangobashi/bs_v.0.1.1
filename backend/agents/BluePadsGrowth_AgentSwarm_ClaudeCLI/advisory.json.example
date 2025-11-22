@@ -1,0 +1,377 @@
+{
+  "advisory_metadata": {
+    "name": "HorizonWealth Advisory - 2025 Strategic Planning",
+    "type": "comprehensive_advisory",
+    "created_date": "2025-01-15",
+    "advisor_lead": "Michael Chen",
+    "engagement_type": "annual_comprehensive_review"
+  },
+
+  "firm_profile": {
+    "name": "HorizonWealth Financial Advisory",
+    "size": "mid_market",
+    "aum_under_management": 850000000,
+    "num_advisors": 8,
+    "num_support_staff": 6,
+    "founded_year": 2005,
+    "specialization": ["high_net_worth", "executive_compensation", "multigenerational_wealth"],
+    "regulatory_licenses": ["SEC_RIA", "CFP_firm", "state_securities"],
+    "fee_structure": "assets_under_management",
+    "strategic_goals": [
+      "grow_aum_to_1.2B_by_2027",
+      "expand_multigenerational_planning",
+      "build_executive_benefit_practice"
+    ],
+    "operational_focus": "tech_integration",
+    "compliance_maturity": "advanced",
+    "tech_stack": "Schwab_Institutional_eMoney_Advisor"
+  },
+
+  "engagement_type": "annual_comprehensive_review",
+  "engagement_scope": [
+    "portfolio_review_and_rebalancing",
+    "financial_planning_update",
+    "tax_optimization",
+    "risk_assessment",
+    "goal_alignment"
+  ],
+
+  "client_profile": {
+    "primary_client": {
+      "name": "Richard & Margaret Thompson",
+      "age_primary": 58,
+      "age_spouse": 56,
+      "net_worth": 12500000,
+      "liquid_assets": 8200000,
+      "investable_assets": 6500000,
+      "residence": "Boston, MA",
+      "situation": "owner_businessman_couple"
+    },
+    "family_situation": {
+      "married": true,
+      "children": 3,
+      "adult_children": 2,
+      "minor_children": 1,
+      "aging_parents": true,
+      "multi_generational_wealth_transfer": true
+    },
+    "professional_profile": {
+      "primary_occupation": "CEO_manufacturing_company",
+      "spouse_occupation": "nonprofit_director",
+      "business_ownership": true,
+      "business_value": 15000000,
+      "business_liquidity_event_timeline": "3_to_5_years"
+    },
+    "wealth_level": "high_net_worth",
+    "relationship_depth": "12_years",
+    "relationship_strength": "very_strong",
+    "advisory_complexity": "high",
+    "client_segment": "executive_business_owner"
+  },
+
+  "goals_and_objectives": [
+    {
+      "goal": "prepare_for_business_exit",
+      "timeline": "3_to_5_years",
+      "target_amount": 50000000,
+      "priority": "critical",
+      "requires": ["tax_planning", "business_valuation", "strategy"]
+    },
+    {
+      "goal": "fund_children_education",
+      "timeline": "ongoing",
+      "target_amount": 2000000,
+      "priority": "high",
+      "requires": ["college_planning", "tax_optimization"]
+    },
+    {
+      "goal": "retire_at_65",
+      "timeline": "7_years",
+      "target_retirement_spending": 500000,
+      "priority": "high",
+      "requires": ["income_projection", "portfolio_strategy"]
+    },
+    {
+      "goal": "preserve_wealth_across_generations",
+      "timeline": "multi_generational",
+      "priority": "very_high",
+      "requires": ["estate_planning", "trust_strategy", "tax_efficiency"]
+    },
+    {
+      "goal": "charitable_giving_strategy",
+      "timeline": "ongoing",
+      "annual_charitable_intent": 250000,
+      "priority": "medium",
+      "requires": ["charitable_planning", "tax_optimization"]
+    }
+  ],
+
+  "financial_situation": {
+    "annual_income": {
+      "business_income": 800000,
+      "investment_income": 175000,
+      "spouse_w2_income": 120000,
+      "total": 1095000
+    },
+    "annual_expenses": {
+      "living_expenses": 300000,
+      "business_expenses": 100000,
+      "discretionary_spending": 150000,
+      "tax_payments": 250000,
+      "total": 800000
+    },
+    "annual_savings_capacity": 295000,
+    "cash_flow_status": "strong_positive",
+    "debt_situation": {
+      "business_debt": 2000000,
+      "personal_debt": 500000,
+      "mortgage": 1200000
+    }
+  },
+
+  "investment_profile": {
+    "risk_tolerance": "moderate_to_aggressive",
+    "time_horizon": "long_term",
+    "volatility_comfort": "moderate_volatility_acceptable",
+    "investment_experience": "sophisticated",
+    "investment_knowledge": "advanced",
+    "concentrated_positions": {
+      "business_equity": 15000000,
+      "concentration_risk": "critical"
+    ],
+    "current_allocation": {
+      "stocks": 0.60,
+      "bonds": 0.25,
+      "alternatives": 0.10,
+      "cash": 0.05
+    },
+    "desired_allocation": {
+      "stocks": 0.55,
+      "bonds": 0.30,
+      "alternatives": 0.12,
+      "cash": 0.03
+    },
+    "liquidity_needs": "moderate",
+    "special_constraints": "business_concentration_requires_hedging"
+  },
+
+  "portfolio_details": {
+    "total_aum": 6500000,
+    "account_structure": [
+      {
+        "account_type": "joint_brokerage",
+        "balance": 2500000,
+        "custodian": "Schwab"
+      },
+      {
+        "account_type": "separate_ira_accounts",
+        "balance": 1800000,
+        "custodian": "Schwab"
+      },
+      {
+        "account_type": "529_education_accounts",
+        "balance": 800000,
+        "custodian": "Vanguard"
+      },
+      {
+        "account_type": "trust_accounts",
+        "balance": 1400000,
+        "custodian": "Schwab"
+      }
+    ],
+    "investment_strategy_type": "diversified_core",
+    "rebalancing_frequency": "semi_annual",
+    "last_review_date": "2024-06-15",
+    "performance_vs_benchmark": -0.75
+  },
+
+  "tax_planning": {
+    "tax_situation_complexity": "very_high",
+    "annual_tax_liability": 250000,
+    "marginal_tax_rate": 0.43,
+    "capital_gains_status": "mixed_long_short",
+    "alternative_minimum_tax_exposure": true,
+    "tax_loss_harvesting_eligible": true,
+    "state_tax_exposure": "high",
+    "tax_planning_focus": [
+      "business_exit_tax_strategy",
+      "charitable_giving_optimization",
+      "estate_tax_minimization",
+      "business_succession_tax_planning"
+    ]
+  },
+
+  "estate_and_legacy_planning": {
+    "estate_plan_status": "outdated_needs_revision",
+    "estate_value": 35000000,
+    "estate_tax_exposure": true,
+    "trust_structure": "revocable_trust",
+    "beneficiary_situation": "adult_children_and_spouse",
+    "charitable_intent": true,
+    "charitable_giving_vehicle": "none_yet",
+    "business_succession_plan": "needs_development",
+    "plan_review_needed": true,
+    "coordination_with_attorney": "needed"
+  },
+
+  "insurance_and_risk": {
+    "life_insurance": {
+      "amount": 2000000,
+      "type": "term",
+      "coverage_adequacy": "potentially_insufficient",
+      "review_needed": true
+    },
+    "disability_insurance": {
+      "amount": 5000,
+      "type": "business_overhead",
+      "coverage_adequacy": "likely_insufficient"
+    },
+    "property_and_casualty": {
+      "homeowners": 2500000,
+      "umbrella": 5000000,
+      "business_insurance": "held_separately"
+    },
+    "liability_exposures": [
+      "business_liability",
+      "executive_liability",
+      "personal_liability"
+    ]
+  },
+
+  "retirement_readiness": {
+    "current_age": 58,
+    "planned_retirement_age": 65,
+    "years_to_retirement": 7,
+    "retirement_income_need": 500000,
+    "projected_social_security": 48000,
+    "business_income_sustainability": "uncertain_post_exit",
+    "retirement_readiness_assessment": "strong_if_business_exits_successfully",
+    "income_gap": "needs_analysis"
+  },
+
+  "business_situation": {
+    "business_type": "manufacturing_company",
+    "business_value_estimate": 15000000,
+    "business_valuation_method": "ebitda_multiple",
+    "ebitda": 3000000,
+    "years_to_potential_sale": 3,
+    "sale_scenario_planning": "critical",
+    "owner_role": "active_day_to_day",
+    "succession_plan": "undefined",
+    "key_person_insurance": true,
+    "buy_sell_agreement": "basic_outdated"
+  },
+
+  "previous_advisor_actions": [
+    {
+      "date": "2024-06-15",
+      "action": "portfolio_rebalancing",
+      "outcome": "successful"
+    },
+    {
+      "date": "2024-09-20",
+      "action": "tax_loss_harvesting",
+      "outcome": "realized_80k_losses"
+    },
+    {
+      "date": "2024-12-01",
+      "action": "estate_plan_review_initiated",
+      "outcome": "incomplete_pending_attorney"
+    }
+  ],
+
+  "communication_preferences": {
+    "meeting_frequency": "quarterly_in_person",
+    "communication_method": "mix_email_phone",
+    "decision_making_style": "collaborative",
+    "spouse_involvement": "equal_partner"
+  },
+
+  "kpis_and_success_metrics": [
+    {
+      "metric": "investment_performance_vs_benchmark",
+      "target": "match_or_exceed",
+      "current": "-0.75%"
+    },
+    {
+      "metric": "total_wealth_growth_rate",
+      "target": "5_percent_annually",
+      "current": "tracking"
+    },
+    {
+      "metric": "tax_efficiency",
+      "target": "minimize_tax_leakage",
+      "current": "needs_assessment"
+    },
+    {
+      "metric": "business_exit_readiness",
+      "target": "achievable_by_2027_2028",
+      "current": "in_progress"
+    },
+    {
+      "metric": "goal_achievement_probability",
+      "target": "95_percent_plus",
+      "current": "needs_analysis"
+    }
+  ],
+
+  "risk_assessments": [
+    {
+      "risk": "business_concentration",
+      "severity": "critical",
+      "mitigation": "diversification_plan_needed",
+      "responsibility": "marcus_and_thomas"
+    },
+    {
+      "risk": "market_volatility_impact",
+      "severity": "moderate",
+      "mitigation": "rebalancing_and_hedging",
+      "responsibility": "marcus"
+    },
+    {
+      "risk": "estate_tax_exposure",
+      "severity": "high",
+      "mitigation": "estate_plan_update_needed",
+      "responsibility": "gregory_and_sofia"
+    },
+    {
+      "risk": "business_exit_execution",
+      "severity": "high",
+      "mitigation": "strategic_planning_and_coordination",
+      "responsibility": "thomas_sofia_gregory"
+    }
+  ],
+
+  "next_actions": [
+    {
+      "action": "comprehensive_financial_plan_update",
+      "owner": "Sofia Moretti",
+      "deadline": "2025-03-15",
+      "priority": "high"
+    },
+    {
+      "action": "business_exit_scenario_modeling",
+      "owner": "Thomas Sterling",
+      "deadline": "2025-02-28",
+      "priority": "critical"
+    },
+    {
+      "action": "estate_plan_coordination_with_attorney",
+      "owner": "Gregory Walsh",
+      "deadline": "2025-03-30",
+      "priority": "high"
+    },
+    {
+      "action": "portfolio_rebalancing_execution",
+      "owner": "Marcus Webb",
+      "deadline": "2025-02-15",
+      "priority": "medium"
+    },
+    {
+      "action": "insurance_review_and_recommendations",
+      "owner": "Sofia Moretti",
+      "deadline": "2025-03-15",
+      "priority": "medium"
+    }
+  ]
+}
