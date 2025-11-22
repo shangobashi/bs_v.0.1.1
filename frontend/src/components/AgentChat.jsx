@@ -458,9 +458,9 @@ function AgentChat() {
                 disabled={loading}
                 style={{ width: '180px' }}
               >
-                <option value="claude">Claude</option>
-                <option value="openai">OpenAI</option>
-                <option value="gemini">Gemini</option>
+                <option value="claude">Claude 4.5 Sonnet</option>
+                <option value="openai">GPT-5.1</option>
+                <option value="gemini">Gemini 3 Pro</option>
               </select>
             </div>
 

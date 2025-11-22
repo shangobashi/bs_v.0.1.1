@@ -54,9 +54,9 @@ function ApiKeyManager() {
             onChange={(e) => setProvider(e.target.value)}
             disabled={loading}
           >
-            <option value="claude">Claude (Anthropic)</option>
-            <option value="openai">OpenAI (ChatGPT)</option>
-            <option value="gemini">Google Gemini</option>
+            <option value="claude">Claude 4.5 Sonnet (Anthropic)</option>
+            <option value="openai">GPT-5.1 (OpenAI)</option>
+            <option value="gemini">Gemini 3 Pro (Google)</option>
           </select>
         </div>
 
