@@ -482,7 +482,7 @@ function AgentChat() {
             </div>
           )}
 
-          <div className="header-actions" style={{ display: 'flex', gap: '1rem', marginLeft: 'auto', alignItems: 'center' }}>
+          <div className="header-actions">
             <div className="control-group" style={{ margin: 0 }}>
               <label htmlFor="provider" style={{ marginRight: '0.5rem', whiteSpace: 'nowrap' }}>Provider:</label>
               <select
@@ -498,22 +498,11 @@ function AgentChat() {
               </select>
             </div>
             <button
-              className="theme-toggle"
+              className="theme-toggle clear-chat-btn"
               onClick={clearChat}
               title="Clear Chat History"
-              style={{
-                width: '180px',
-                height: '38px', // Fixed height to match inputs
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: 0,
-                color: 'var(--error)',
-                borderColor: 'var(--error)',
-                whiteSpace: 'nowrap' // Prevent text wrapping
-              }}
             >
-              <span className="theme-label" style={{ color: 'var(--error)' }}>CLEAR CHAT</span>
+              <span className="theme-label">CLEAR CHAT</span>
             </button>
 
             {sessionId && Object.keys(sessionArtifacts).length > 0 && (

@@ -939,6 +939,10 @@
   .message-agent .message-content {
     max-width: 90%;
   }
+
+  #agent {
+    max-width: 100%;
+  }
 }
 
 .swarms-list h3 {
@@ -1263,9 +1267,53 @@
     width: 100%;
   }
 
-  #agent {
-    max-width: 100%;
-  }
+  max-width: 100%;
+}
+
+.header-actions {
+  width: 100%;
+  flex-direction: column;
+  align-items: stretch;
+  margin-left: 0 !important;
+  gap: 1rem;
+}
+
+.header-actions .control-group {
+  width: 100%;
+}
+
+.header-actions .control-group select {
+  width: 100% !important;
+}
+
+.clear-chat-btn {
+  width: 100% !important;
+}
+}
+
+.header-actions {
+  display: flex;
+  gap: 1rem;
+  margin-left: auto;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.clear-chat-btn {
+  width: 180px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  color: var(--error);
+  border-color: var(--error);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.clear-chat-btn .theme-label {
+  color: var(--error);
 }
 
 /* Modal Styles */
