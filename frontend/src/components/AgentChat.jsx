@@ -455,13 +455,14 @@ function AgentChat() {
 
             <div className="control-group">
               <label>
+                Real-time Streaming {wsConnected ? '(Connected)' : '(Disconnected)'}
                 <input
                   type="checkbox"
                   checked={useStreaming}
                   onChange={(e) => setUseStreaming(e.target.checked && wsConnected)}
                   disabled={!wsConnected}
+                  style={{ marginLeft: '0.5rem' }}
                 />
-                Real-time Streaming {wsConnected ? '(Connected)' : '(Disconnected)'}
               </label>
             </div>
           </div>
