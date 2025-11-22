@@ -336,9 +336,7 @@ function GriotQuestionnaire({ onComplete }) {
   return (
     <div className="griot-questionnaire">
       <div className="griot-banner">
-        <h1>GRIOT AWAKENS</h1>
-        <p>Keeper of Stories · Guide of Paths · Bridge Between Wisdom and Innovation</p>
-        <p className="ubuntu">"I am because we are" — Ubuntu Philosophy</p>
+        <h1>GRIOT</h1>
       </div>
 
       <div className="questionnaire-container">
