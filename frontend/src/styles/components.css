@@ -341,10 +341,14 @@
 
 .form-help {
   display: block;
-  margin-top: 0.75rem;
+  margin-top: 1rem;
   color: var(--text-muted);
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   text-align: center;
+  line-height: 1.6;
+  max-width: 80%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* API Key Manager */
@@ -384,16 +388,19 @@
 
 .form-group label {
   display: block;
-  color: var(--text-primary);
+  color: var(--accent-primary);
   font-weight: 600;
   font-size: 1rem;
   margin-bottom: 0.75rem;
+  letter-spacing: 0.02em;
 }
 
 .form-group select,
 .form-group input {
   width: 100%;
   padding: 1rem 1.25rem;
+  padding-right: 2.5rem;
+  /* Space for arrow */
   background: var(--bg-primary);
   border: 1px solid var(--border-color);
   color: var(--text-primary);
@@ -409,7 +416,7 @@
   box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.15);
 }
 
-.input-with-toggle {
+.key-input-wrapper {
   position: relative;
   display: flex;
   align-items: center;
@@ -1181,6 +1188,7 @@
 .stat-card.total .stat-value {
   color: #D4AF37;
 }
+
 /* Responsive adjustments for Agent Chat */
 @media (max-width: 768px) {
   .chat-header {
@@ -1188,25 +1196,25 @@
     align-items: flex-start;
     gap: 1.5rem;
   }
-  
+
   .chat-controls {
     width: 100%;
     flex-direction: column;
     align-items: stretch;
     gap: 1rem;
   }
-  
+
   .control-group {
     flex-direction: column;
     align-items: flex-start;
     width: 100%;
   }
-  
+
   .control-group select,
   .control-group input {
     width: 100%;
   }
-  
+
   #agent {
     max-width: 100%;
   }
@@ -1273,12 +1281,23 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideIn {
-  from { transform: translateY(-20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
 
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

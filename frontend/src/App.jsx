@@ -19,7 +19,7 @@ function App() {
           <header className="app-header">
             <div className="header-content">
               <div className="logo-section">
-                <h1 className="app-title">BluePads Global</h1>
+                <h1 className="app-title">Blue Swarm</h1>
                 <p className="app-subtitle">Interact with +60 in-house agents across 5 specialized swarms</p>
               </div>
               <nav className="app-nav">
@@ -60,7 +60,7 @@ function App() {
 
           <footer className="app-footer">
             <div className="footer-content">
-              <p>SwarmAgents WebUI MVP v0.1.0</p>
+              <p>Blue Swarm by Blue Pads</p>
               <p className="footer-tagline">
                 "I am because we are" - Ubuntu Philosophy
               </p>
