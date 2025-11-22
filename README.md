@@ -1,10 +1,10 @@
-# SwarmAgents WebUI MVP
+# BlueSwarm MVP
 
 > **Note**: This is a private portfolio project. The code provided here is a limited MVP snapshot demonstrating core architectural concepts. The full production system is proprietary.
 
 ## Project Overview
 
-**SwarmAgents** is a sophisticated orchestration platform designed to manage and deploy **60+ humanized AI agents** organized into specialized "swarms" (Legal, Research, Vision, Labs, Growth).
+**BlueSwarm** is a sophisticated orchestration platform designed to manage and deploy **60+ humanized AI agents** organized into specialized "swarms" (Legal, Research, Vision, Labs, Growth).
 
 Unlike standard chatbot wrappers, this system implements a **multi-agent architecture** where agents maintain distinct personas, expertise, and operational boundaries. The platform abstracts the complexity of interacting with multiple LLM providers (Anthropic Claude, OpenAI GPT-4, Google Gemini) into a unified, real-time interface.
 

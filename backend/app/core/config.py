@@ -5,7 +5,7 @@ class Settings(BaseSettings):
     """Application settings from environment variables"""
 
     # App
-    APP_NAME: str = "SwarmAgents WebUI MVP"
+    APP_NAME: str = "BlueSwarm MVP"
     APP_VERSION: str = "0.1.0"
     DEBUG: bool = False
 
