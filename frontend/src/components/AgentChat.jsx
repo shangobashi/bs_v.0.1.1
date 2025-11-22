@@ -451,6 +451,8 @@ function AgentChat() {
 
 
 
+
+
             <div className="control-group">
               <label>
                 <input
@@ -480,9 +482,9 @@ function AgentChat() {
             </div>
           )}
 
-          <div className="header-actions" style={{ display: 'flex', gap: '0.5rem', marginLeft: 'auto', flexDirection: 'column', alignItems: 'flex-end' }}>
-            <div className="control-group" style={{ marginBottom: '0.5rem' }}>
-              <label htmlFor="provider" style={{ marginRight: '0.5rem' }}>Provider:</label>
+          <div className="header-actions" style={{ display: 'flex', gap: '1rem', marginLeft: 'auto', alignItems: 'center' }}>
+            <div className="control-group" style={{ margin: 0 }}>
+              <label htmlFor="provider" style={{ marginRight: '0.5rem', whiteSpace: 'nowrap' }}>Provider:</label>
               <select
                 id="provider"
                 value={provider}
@@ -501,10 +503,14 @@ function AgentChat() {
               title="Clear Chat History"
               style={{
                 width: '180px',
+                height: '38px', // Fixed height to match inputs
+                display: 'flex',
+                alignItems: 'center',
                 justifyContent: 'center',
                 margin: 0,
                 color: 'var(--error)',
-                borderColor: 'var(--error)'
+                borderColor: 'var(--error)',
+                whiteSpace: 'nowrap' // Prevent text wrapping
               }}
             >
               <span className="theme-label" style={{ color: 'var(--error)' }}>CLEAR CHAT</span>
