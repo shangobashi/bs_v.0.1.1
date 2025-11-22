@@ -1,4 +1,7 @@
-# BlueSwarm MVP
+<div align="center">
+  <img src="assets/blueswarm-logo.jpg" alt="BlueSwarm Logo" width="200" />
+  <h1>BlueSwarm MVP</h1>
+</div>
 
 > **Note**: This is a private portfolio project. The code provided here is a limited MVP snapshot demonstrating core architectural concepts. The full production system is proprietary.
 
@@ -44,6 +47,7 @@ Unlike standard chatbot wrappers, this system implements a **multi-agent archite
 Seamlessly switch between **Claude 3.5 Sonnet**, **GPT-4o**, and **Gemini 1.5 Pro** mid-conversation. The backend handles the context window translation and token limit management.
 
 ### 2. "Swarm" Intelligence
+<img src="assets/blueswarm-icon.jpg" alt="BlueSwarm Icon" width="100" align="right" />
 Agents are not standalone; they belong to functional departments:
 *   **BluePadsLegal**: Compliance, contracts, and regulatory agents.
 *   **BluePadsGrowth**: Marketing, sales, and business development agents.
