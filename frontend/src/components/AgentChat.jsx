@@ -461,7 +461,7 @@ function AgentChat() {
                   checked={useStreaming}
                   onChange={(e) => setUseStreaming(e.target.checked && wsConnected)}
                   disabled={!wsConnected}
-                  style={{ marginLeft: '0.5rem' }}
+                  style={{ marginLeft: '0.25rem' }}
                 />
               </label>
             </div>
