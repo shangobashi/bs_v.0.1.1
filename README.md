@@ -44,7 +44,7 @@ Unlike standard chatbot wrappers, this system implements a **multi-agent archite
 ## Key Features
 
 ### 1. Multi-Provider AI Support
-Seamlessly switch between **Claude 3.5 Sonnet**, **GPT-4o**, and **Gemini 1.5 Pro** mid-conversation. The backend handles the context window translation and token limit management.
+Seamless integration of multiple AI solution. The backend handles the context window translation and token limit management. Supports **Claude 4.5 Sonnet / 4.1 Opus**, **GPT-5.1**, and **Gemini 3 Pro** mid-conversation.
 
 ### 2. "Swarm" Intelligence
 <img src="assets/blueswarm-icon.jpg" alt="BlueSwarm Icon" width="100" align="right" />

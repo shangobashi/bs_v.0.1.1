@@ -110,7 +110,7 @@ class MultiAPIAgentService:
             raise ValueError("Claude client not initialized")
 
         response = await self.claude_client.messages.create(
-            model="claude-3-5-sonnet-20241022",
+            model="claude-4-5-sonnet-20250929",
             max_tokens=request.max_tokens,
             messages=[{"role": "user", "content": request.message}],
             system=request.system_prompt or "You are a helpful AI assistant"
@@ -123,7 +123,7 @@ class MultiAPIAgentService:
             raise ValueError("Claude client not initialized")
 
         with self.claude_client.messages.stream(
-            model="claude-3-5-sonnet-20241022",
+            model="claude-4-5-sonnet-20250929",
             max_tokens=request.max_tokens,
             messages=[{"role": "user", "content": request.message}],
             system=request.system_prompt or "You are a helpful AI assistant"
@@ -137,7 +137,7 @@ class MultiAPIAgentService:
             raise ValueError("OpenAI client not initialized")
 
         response = await self.openai_client.chat.completions.create(
-            model="gpt-4o",
+            model="gpt-5.1",
             max_tokens=request.max_tokens,
             temperature=request.temperature,
             messages=[
@@ -153,7 +153,7 @@ class MultiAPIAgentService:
             raise ValueError("OpenAI client not initialized")
 
         stream = await self.openai_client.chat.completions.create(
-            model="gpt-4o",
+            model="gpt-5.1",
             max_tokens=request.max_tokens,
             temperature=request.temperature,
             stream=True,
@@ -175,11 +175,11 @@ class MultiAPIAgentService:
         # Create model with system instruction if provided
         if request.system_prompt:
             model = self.gemini_client.GenerativeModel(
-                "gemini-2.0-flash",
+                "gemini-3-pro-preview",
                 system_instruction=request.system_prompt
             )
         else:
-            model = self.gemini_client.GenerativeModel("gemini-2.0-flash")
+            model = self.gemini_client.GenerativeModel("gemini-3-pro-preview")
 
         response = model.generate_content(request.message)
         return response.text, 0  # Gemini doesn't provide token count in this API
@@ -192,11 +192,11 @@ class MultiAPIAgentService:
         # Create model with system instruction if provided
         if request.system_prompt:
             model = self.gemini_client.GenerativeModel(
-                "gemini-2.0-flash",
+                "gemini-3-pro-preview",
                 system_instruction=request.system_prompt
             )
         else:
-            model = self.gemini_client.GenerativeModel("gemini-2.0-flash")
+            model = self.gemini_client.GenerativeModel("gemini-3-pro-preview")
 
         response = model.generate_content(request.message, stream=True)
 
