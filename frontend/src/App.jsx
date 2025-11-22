@@ -61,9 +61,6 @@ function App() {
           <footer className="app-footer">
             <div className="footer-content">
               <p>Blue Swarm by Blue Pads</p>
-              <p className="footer-tagline">
-                "I am because we are" - Ubuntu Philosophy
-              </p>
               <p className="footer-info">
                 Powered by BluePadsGlobal's 50 humanized agents across 4 specialized swarms
               </p>
