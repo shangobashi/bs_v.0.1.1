@@ -1,0 +1,413 @@
+/* Nova Home Page V3 - Pixel Perfect & Harmonious */
+
+.nova-home-v3 {
+    display: flex;
+    flex-direction: column;
+    background-color: #050302;
+    /* Deep warm black */
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    color: #FFFBF0;
+    overflow-x: hidden;
+}
+
+/* --- Top Navigation --- */
+.nova-top-nav {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 4rem;
+    z-index: 50;
+}
+
+.nav-logo {
+    font-size: 1rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+    letter-spacing: 0.05em;
+}
+
+.nav-actions {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.nav-link {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.nav-link:hover {
+    color: #FFF;
+}
+
+.nav-cta {
+    background: #FFB800;
+    /* Honey Gold */
+    color: #050302;
+    border: none;
+    padding: 0.6rem 1.8rem;
+    border-radius: 24px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.nav-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 184, 0, 0.3);
+}
+
+/* --- Hero Section --- */
+.nova-hero-v3 {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    padding-bottom: 6rem;
+    text-align: center;
+}
+
+.hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+}
+
+.hero-background img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 25%;
+    /* Adjusted for face focus */
+}
+
+.hero-overlay-gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg,
+            rgba(5, 3, 2, 0.2) 0%,
+            rgba(5, 3, 2, 0.1) 40%,
+            rgba(5, 3, 2, 0.8) 80%,
+            #050302 100%);
+}
+
+.hero-content-centered {
+    z-index: 10;
+    width: 100%;
+    max-width: 1000px;
+    padding: 0 2rem;
+    animation: fadeInUp 1s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.nova-hero-v3 h1 {
+    font-size: 4.5rem;
+    font-weight: 600;
+    line-height: 1.1;
+    margin-bottom: 2.5rem;
+    letter-spacing: -0.03em;
+    color: #FFFFFF;
+    text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.trusted-by {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    opacity: 0.8;
+}
+
+.trusted-by>span {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.logos {
+    display: flex;
+    gap: 3rem;
+    align-items: center;
+    filter: grayscale(100%) brightness(1.2);
+    opacity: 0.7;
+}
+
+.logo-text {
+    font-family: 'Times New Roman', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+/* --- Bento Grid Section (Harmonious Palette) --- */
+.nova-bento-section {
+    padding: 6rem 4rem;
+    background: #050302;
+    position: relative;
+    z-index: 10;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 500;
+    margin-bottom: 4rem;
+    color: rgba(255, 255, 255, 0.95);
+    letter-spacing: -0.02em;
+}
+
+.bento-grid-v3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 260px);
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.bento-card {
+    /* Harmonious Warm Dark Glass */
+    background: linear-gradient(145deg, rgba(30, 25, 20, 0.6) 0%, rgba(15, 12, 10, 0.8) 100%);
+    border: 1px solid rgba(255, 184, 0, 0.1);
+    /* Subtle gold border */
+    border-radius: 20px;
+    padding: 1.8rem;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.bento-card:hover {
+    border-color: rgba(255, 184, 0, 0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    background: linear-gradient(145deg, rgba(35, 30, 25, 0.7) 0%, rgba(20, 15, 12, 0.9) 100%);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+}
+
+.card-label {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 500;
+}
+
+.card-value {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #FFB800;
+    /* Gold */
+}
+
+.chart-container {
+    flex: 1;
+    display: flex;
+    width: 100%;
+    position: relative;
+}
+
+/* --- Features Section --- */
+.nova-features-section {
+    padding: 6rem 4rem;
+    background: linear-gradient(180deg, #050302 0%, #0D0905 100%);
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.feature-item {
+    padding: 2rem;
+    border-left: 1px solid rgba(255, 184, 0, 0.2);
+    transition: border-color 0.3s;
+}
+
+.feature-item:hover {
+    border-left-color: #FFB800;
+}
+
+.feature-item h3 {
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* --- Pricing Section --- */
+.nova-pricing-section {
+    padding: 6rem 4rem;
+    background: #0D0905;
+}
+
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.pricing-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 24px;
+    padding: 2.5rem;
+    text-align: center;
+    transition: transform 0.3s;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.pricing-card.highlight {
+    background: linear-gradient(145deg, rgba(255, 184, 0, 0.1) 0%, rgba(10, 10, 10, 0.8) 100%);
+    border-color: rgba(255, 184, 0, 0.3);
+    transform: scale(1.05);
+}
+
+.pricing-card>.nova-btn {
+    margin-top: auto;
+}
+
+.pricing-card h3 {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 1rem;
+}
+
+.pricing-price {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #FFF;
+    margin-bottom: 2rem;
+}
+
+.pricing-features {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 2rem;
+    text-align: left;
+}
+
+.pricing-features li {
+    margin-bottom: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* --- About Section --- */
+.nova-about-section {
+    padding: 6rem 4rem;
+    background: #050302;
+    text-align: center;
+}
+
+.about-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.about-content h2 {
+    font-size: 3rem;
+    margin-bottom: 2rem;
+    color: #FFB800;
+}
+
+.about-content p {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 2rem;
+}
+
+/* Footer Navigation */
+.nova-footer-nav {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    padding: 4rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    background: #050302;
+}
+
+.footer-link {
+    color: rgba(255, 255, 255, 0.5);
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: color 0.2s;
+}
+
+.footer-link:hover {
+    color: #FFB800;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+
+    .bento-grid-v3,
+    .features-grid,
+    .pricing-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .bento-grid-v3 {
+        grid-template-rows: repeat(3, 260px);
+    }
+}
+
+@media (max-width: 768px) {
+    .nova-hero-v3 h1 {
+        font-size: 3rem;
+    }
+
+    .bento-grid-v3,
+    .features-grid,
+    .pricing-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
+
+    .nova-top-nav {
+        padding: 1.5rem;
+    }
+}

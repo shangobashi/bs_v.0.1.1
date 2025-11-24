@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import agentAPI from '../services/api';
 import { formatAgentName } from '../utils/formatters';
+import GlassCard from './Nova/GlassCard';
+import NovaButton from './Nova/NovaButton';
+import SidebarToggle from './Layout/SidebarToggle';
 import '../styles/components.css';
 
 function SwarmSelector() {
   const [swarms, setSwarms] = useState([]);
+  const navigate = useNavigate();
   const [agents, setAgents] = useState([]);
   const [selectedSwarm, setSelectedSwarm] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -75,7 +80,7 @@ function SwarmSelector() {
 
   if (loading) {
     return (
-      <div className="swarm-selector">
+      <div className="nova-container" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
         <div className="loading">Loading swarms and agents...</div>
       </div>
     );
@@ -83,7 +88,7 @@ function SwarmSelector() {
 
   if (error) {
     return (
-      <div className="swarm-selector">
+      <div className="nova-container" style={{ padding: '2rem', textAlign: 'center', color: 'var(--error)' }}>
         <div className="error">{error}</div>
       </div>
     );
@@ -92,139 +97,144 @@ function SwarmSelector() {
   const swarmAgents = getSwarmAgents();
 
   return (
-    <div className="swarm-selector">
-      <div className="selector-header">
-        <h2>BluePadsGlobal Swarms</h2>
-        <p>Explore specialized agent swarms</p>
+    <div className="nova-container" style={{ padding: '2rem', maxWidth: '1400px', margin: '0 auto' }}>
+      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '3rem' }}>
+        <SidebarToggle />
+        <div className="selector-header" style={{ flex: 1, textAlign: 'center' }}>
+          <h2 style={{ fontSize: '2.5rem', marginBottom: '0.5rem', color: '#FFF' }}>BluePadsGlobal Swarms</h2>
+          <p style={{ color: 'rgba(255,255,255,0.6)' }}>Explore specialized agent swarms</p>
+        </div>
+        <div style={{ width: '40px' }}></div> {/* Spacer for balance */}
       </div>
 
-      <div className="swarms-list">
-        <h3>Available Swarms ({swarms.length})</h3>
-        <div className="swarms-grid">
+      <div className="swarms-section" style={{ marginBottom: '4rem' }}>
+        <h3 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', color: 'var(--accent-primary)' }}>Available Swarms ({swarms.length})</h3>
+        <div className="swarms-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '1.5rem' }}>
           {swarms.map((swarm) => (
-            <div
+            <GlassCard
               key={swarm.name}
               className={`swarm-card ${selectedSwarm?.name === swarm.name ? 'active' : ''}`}
               onClick={() => setSelectedSwarm(swarm)}
+              style={{
+                cursor: 'pointer',
+                borderColor: selectedSwarm?.name === swarm.name ? 'var(--accent-primary)' : 'rgba(255,255,255,0.1)',
+                background: selectedSwarm?.name === swarm.name ? 'linear-gradient(145deg, rgba(255, 184, 0, 0.1) 0%, rgba(10, 10, 10, 0.8) 100%)' : undefined
+              }}
             >
-              <h4>{swarm.display_name || swarm.name}</h4>
-              <div className="swarm-info">
-                <p className="swarm-specialty">{swarm.specialty}</p>
-                <div className="swarm-stats">
-                  <span className="stat">
-                    <strong>{swarm.agents}</strong> Agents
-                  </span>
-                  <span className="stat">
-                    Lead: <strong>{swarm.lead}</strong>
-                  </span>
-                </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                <h4 style={{ fontSize: '1.25rem', margin: 0, color: '#FFF' }}>{swarm.display_name || swarm.name}</h4>
+                <span style={{
+                  background: 'rgba(255,184,0,0.1)',
+                  color: '#FFB800',
+                  padding: '0.25rem 0.75rem',
+                  borderRadius: '12px',
+                  fontSize: '0.75rem',
+                  fontWeight: '600'
+                }}>
+                  {swarm.agents} Agents
+                </span>
               </div>
-              <div className="focus-areas">
+
+              <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem', marginBottom: '1.5rem', lineHeight: '1.5' }}>
+                {swarm.specialty}
+              </p>
+
+              <div className="focus-areas" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
                 {swarm.focus_areas.map((area) => (
-                  <span key={area} className="focus-tag">
+                  <span key={area} className="focus-tag" style={{
+                    fontSize: '0.75rem',
+                    padding: '0.25rem 0.75rem',
+                    borderRadius: '20px',
+                    background: 'rgba(255,255,255,0.05)',
+                    color: 'rgba(255,255,255,0.6)',
+                    border: '1px solid rgba(255,255,255,0.1)'
+                  }}>
                     {area}
                   </span>
                 ))}
               </div>
-            </div>
+            </GlassCard>
           ))}
         </div>
       </div>
 
       {selectedSwarm && (
-        <div className="agents-list">
-          <h3>{selectedSwarm.display_name || selectedSwarm.name} - Agents ({swarmAgents.length})</h3>
-          <div className="agents-grid">
+        <div className="agents-section">
+          <h3 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', color: 'var(--accent-primary)' }}>
+            {selectedSwarm.display_name || selectedSwarm.name} - Agents ({swarmAgents.length})
+          </h3>
+          <div className="agents-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
             {swarmAgents.length > 0 ? (
               swarmAgents.map((agent) => (
-                <div
+                <GlassCard
                   key={agent.id}
                   className={`agent-card ${expandedAgentId === agent.id ? 'expanded' : ''}`}
                   onClick={() => toggleAgent(agent.id)}
+                  style={{
+                    cursor: 'pointer',
+                    gridColumn: expandedAgentId === agent.id ? '1 / -1' : 'auto',
+                    transition: 'all 0.3s ease'
+                  }}
                 >
-                  <div className="agent-header">
-                    <h4>{formatAgentName(agent.name)}</h4>
-                    <span className="badge badge-id">{agent.id}</span>
+                  <div className="agent-header" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                    <h4 style={{ margin: 0, color: '#FFF' }}>{formatAgentName(agent.name)}</h4>
+                    <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', fontFamily: 'monospace' }}>{agent.id}</span>
                   </div>
-                  <p className="agent-title">{agent.title}</p>
-                  <p className="agent-specialization">
-                    Specialization: <strong>{agent.specialization}</strong>
+                  <p style={{ color: '#FFB800', fontSize: '0.85rem', marginBottom: '0.5rem' }}>{agent.title}</p>
+                  <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem', marginBottom: '1rem' }}>
+                    <strong>Specialization:</strong> {agent.specialization}
                   </p>
 
-                  {expandedAgentId === agent.id && (
-                    <div className="agent-details">
-                      <div className="detail-section">
-                        <h5>Biography</h5>
-                        <p>{agent.biography || "No biography available."}</p>
+                  {expandedAgentId === agent.id ? (
+                    <div className="agent-details" style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                      <div style={{ marginBottom: '1.5rem' }}>
+                        <h5 style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Biography</h5>
+                        <p style={{ color: 'rgba(255,255,255,0.8)', lineHeight: '1.6' }}>{agent.biography || "No biography available."}</p>
                       </div>
-                      <div className="detail-section">
-                        <h5>Expertise Areas</h5>
-                        <div className="expertise-tags">
+
+                      <div style={{ marginBottom: '1.5rem' }}>
+                        <h5 style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Expertise</h5>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
                           {agent.expertise_areas && agent.expertise_areas.length > 0 ? (
                             agent.expertise_areas.map(area => (
-                              <span key={area} className="expertise-tag">{area}</span>
+                              <span key={area} style={{
+                                background: 'rgba(255,184,0,0.1)',
+                                color: '#FFB800',
+                                padding: '0.25rem 0.75rem',
+                                borderRadius: '12px',
+                                fontSize: '0.8rem',
+                                border: '1px solid rgba(255,184,0,0.2)'
+                              }}>{area}</span>
                             ))
                           ) : (
-                            <span>General Professional</span>
+                            <span style={{ color: 'rgba(255,255,255,0.5)' }}>General Professional</span>
                           )}
                         </div>
                       </div>
-                      <div className="detail-section">
-                        <h5>Experience</h5>
-                        <p>{agent.experience_years} years of professional experience</p>
-                      </div>
-                    </div>
-                  )}
 
-                  {!expandedAgentId === agent.id && (
-                    <div className="agent-meta">
-                      <span className="click-hint">Click to view details</span>
+                      <NovaButton
+                        variant="primary"
+                        style={{ marginTop: '1rem' }}
+                        onClick={() => navigate('/chat', { state: { agentId: agent.id } })}
+                      >
+                        Initiate Chat
+                      </NovaButton>
+                    </div>
+                  ) : (
+                    <div style={{ marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                      <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', fontStyle: 'italic' }}>Click to view details</span>
                     </div>
                   )}
-                </div>
+                </GlassCard>
               ))
             ) : (
-              <p className="no-agents">No agents found in this swarm</p>
+              <p className="no-agents" style={{ color: 'rgba(255,255,255,0.5)', fontStyle: 'italic' }}>No agents found in this swarm</p>
             )}
           </div>
         </div>
       )}
-
-      <div className="swarm-summary">
-        <h3>Swarm Overview</h3>
-        <div className="summary-stats-grid">
-          {swarms.map((swarm) => (
-            <div key={swarm.name} className="stat-card" style={{ '--accent-color': getSwarmColor(swarm.name) }}>
-              <div className="stat-icon">
-                {swarm.display_name.charAt(0)}
-              </div>
-              <div className="stat-content">
-                <span className="stat-value">{swarm.agents}</span>
-                <span className="stat-label">{swarm.display_name || swarm.name}</span>
-              </div>
-            </div>
-          ))}
-          <div className="stat-card total">
-            <div className="stat-icon">Σ</div>
-            <div className="stat-content">
-              <span className="stat-value">{agents.length}</span>
-              <span className="stat-label">Total Agents</span>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
-
-// Helper to get accent color based on swarm name
-const getSwarmColor = (name) => {
-  if (name.includes('Growth')) return '#10B981'; // Emerald
-  if (name.includes('Legal')) return '#F59E0B'; // Amber
-  if (name.includes('Marketing') || name.includes('Vision')) return '#8B5CF6'; // Violet
-  if (name.includes('Labs')) return '#3B82F6'; // Blue
-  if (name.includes('R&D') || name.includes('Research')) return '#EC4899'; // Pink
-  return '#D4AF37'; // Gold default
-};
 
 export default SwarmSelector;

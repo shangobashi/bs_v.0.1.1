@@ -1,0 +1,63 @@
+@import './styles/variables.css';
+
+body {
+    margin: 0;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: var(--bg-void);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    min-height: 100vh;
+
+    /* "Nova" Atmosphere: Visual Maximalism */
+    background-image:
+        /* 1. The Golden Core (Top Left - Intense) */
+        radial-gradient(circle at 0% 0%, rgba(255, 184, 0, 0.25) 0%, transparent 60%),
+        /* 2. The Sunset Warmth (Bottom Right - Grounding) */
+        radial-gradient(circle at 100% 100%, rgba(255, 92, 0, 0.2) 0%, transparent 50%),
+        /* 3. The Deep Nebula (Center Right - Ambient) */
+        radial-gradient(circle at 80% 20%, rgba(255, 69, 0, 0.1) 0%, transparent 40%),
+        /* 4. The Void Depth (Center Left - Contrast) */
+        radial-gradient(circle at 20% 80%, rgba(60, 20, 0, 0.1) 0%, transparent 40%);
+
+    background-attachment: fixed;
+    background-size: 150% 150%;
+    animation: nova-breathe 25s ease-in-out infinite alternate;
+}
+
+@keyframes nova-breathe {
+    0% {
+        background-position: 0% 0%;
+    }
+
+    100% {
+        background-position: 20% 20%;
+    }
+}
+
+* {
+    box-sizing: border-box;
+}
+
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-void);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-highlight);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}

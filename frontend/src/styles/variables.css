@@ -1,0 +1,60 @@
+/* Nova Design System - Variables */
+:root {
+    /* --- Palette: Nova (Deep Warm Void + Golden Hour) --- */
+
+    /* Backgrounds */
+    --bg-void: #030202;
+    /* Deepest warm black */
+    --bg-surface: #0D0905;
+    /* Very dark warm brown/black for cards */
+    --bg-glass: rgba(13, 9, 5, 0.6);
+    /* Glassmorphism base with warm tint */
+    --bg-glass-hover: rgba(25, 18, 10, 0.7);
+
+    /* Accents (Warm Lighting) */
+    --accent-primary: #FFB800;
+    /* Honey Gold */
+    --accent-secondary: #FF5C00;
+    /* Sunset Orange */
+    --accent-glow: rgba(255, 184, 0, 0.4);
+    /* Stronger warm glow */
+
+    /* Text */
+    --text-primary: #FFFBF0;
+    /* Warm White */
+    --text-secondary: #A8A29E;
+    /* Warm Gray (Stone-400) */
+    --text-muted: #57534E;
+    /* Warm Dark Gray (Stone-600) */
+
+    /* Borders */
+    --border-subtle: rgba(255, 184, 0, 0.1);
+    /* Subtle gold tint */
+    --border-highlight: rgba(255, 184, 0, 0.25);
+
+    /* --- Typography: Inter --- */
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --tracking-tight: -0.02em;
+    --tracking-tighter: -0.04em;
+
+    /* --- Spacing --- */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.25rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-10: 2.5rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
+
+    /* --- Effects --- */
+    --blur-glass: 16px;
+    /* Increased blur for premium feel */
+    --shadow-card: 0 8px 32px -4px rgba(0, 0, 0, 0.5);
+    --shadow-glow: 0 0 30px var(--accent-glow);
+
+    /* --- Animation --- */
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
