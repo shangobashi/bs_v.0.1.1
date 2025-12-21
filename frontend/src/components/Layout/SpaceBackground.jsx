@@ -1,0 +1,222 @@
+import React, { useEffect, useRef } from 'react';
+
+const SpaceBackground = () => {
+    const canvasRef = useRef(null);
+
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d');
+        let animationFrameId;
+        let stars = [];
+        let shootingStars = [];
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+
+        // Mouse interaction
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetMouseX = 0;
+        let targetMouseY = 0;
+
+        const handleResize = () => {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            initStars();
+        };
+
+        const handleMouseMove = (e) => {
+            targetMouseX = (e.clientX - width / 2) * 0.05; // Sensitivity
+            targetMouseY = (e.clientY - height / 2) * 0.05;
+        };
+
+        class Star {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.z = Math.random() * 2 + 0.5; // Depth factor
+                this.size = Math.random() * 1.5;
+                this.opacity = Math.random() * 0.5 + 0.1;
+                this.baseOpacity = this.opacity;
+                this.twinkleSpeed = Math.random() * 0.02 + 0.005;
+                this.twinkleDir = 1;
+            }
+
+            update() {
+                // Twinkle effect
+                this.opacity += this.twinkleSpeed * this.twinkleDir;
+                if (this.opacity > this.baseOpacity + 0.2 || this.opacity < this.baseOpacity - 0.1) {
+                    this.twinkleDir *= -1;
+                }
+
+                // Parallax movement (smooth easing)
+                this.x += (mouseX * this.z - this.x) * 0.0005; // Very subtle drift
+
+                // Constant slow drift
+                this.y -= 0.05 * this.z;
+
+                // Wrap around
+                if (this.y < 0) this.y = height;
+                if (this.x < 0) this.x = width;
+                if (this.x > width) this.x = 0;
+            }
+
+            draw() {
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x - mouseX * this.z, this.y - mouseY * this.z, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        class ShootingStar {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height * 0.5;
+                this.len = Math.random() * 80 + 10;
+                this.speed = Math.random() * 10 + 6;
+                this.size = Math.random() * 1 + 0.1;
+                this.waitTime = new Date().getTime() + Math.random() * 3000 + 500;
+                this.active = false;
+            }
+
+            update() {
+                if (this.active) {
+                    this.x -= this.speed;
+                    this.y += this.speed;
+                    if (this.x < 0 || this.y > height) {
+                        this.active = false;
+                        this.waitTime = new Date().getTime() + Math.random() * 10000 + 2000; // Random interval
+                    }
+                } else {
+                    if (this.waitTime < new Date().getTime()) {
+                        this.active = true;
+                        this.x = Math.random() * width + 200;
+                        this.y = -50;
+                    }
+                }
+            }
+
+            draw() {
+                if (!this.active) return;
+
+                const gradient = ctx.createLinearGradient(this.x, this.y, this.x + this.len, this.y - this.len);
+                gradient.addColorStop(0, "rgba(255, 255, 255, 1)");
+                gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
+
+                ctx.strokeStyle = gradient;
+                ctx.lineWidth = this.size;
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y);
+                ctx.lineTo(this.x + this.len, this.y - this.len);
+                ctx.stroke();
+            }
+        }
+
+        const initStars = () => {
+            stars = [];
+            for (let i = 0; i < 200; i++) {
+                stars.push(new Star());
+            }
+            shootingStars = [];
+            for (let i = 0; i < 2; i++) {
+                shootingStars.push(new ShootingStar());
+            }
+        };
+
+        const drawNebula = () => {
+            // Subtle colorful glowing orbs for nebula effect
+            const time = new Date().getTime() * 0.0002;
+
+            // Purple/Blue Nebula
+            const gradient1 = ctx.createRadialGradient(
+                width * 0.3 + Math.sin(time) * 100,
+                height * 0.4 + Math.cos(time * 0.8) * 100,
+                0,
+                width * 0.3 + Math.sin(time) * 100,
+                height * 0.4 + Math.cos(time * 0.8) * 100,
+                width * 0.6
+            );
+            gradient1.addColorStop(0, 'rgba(76, 29, 149, 0.08)'); // Deep purple
+            gradient1.addColorStop(1, 'transparent');
+
+            ctx.fillStyle = gradient1;
+            ctx.fillRect(0, 0, width, height);
+
+            // Teal/Cyan Nebula
+            const gradient2 = ctx.createRadialGradient(
+                width * 0.8 - Math.sin(time * 0.5) * 150,
+                height * 0.8 - Math.cos(time * 0.6) * 150,
+                0,
+                width * 0.8 - Math.sin(time * 0.5) * 150,
+                height * 0.8 - Math.cos(time * 0.6) * 150,
+                width * 0.5
+            );
+            gradient2.addColorStop(0, 'rgba(15, 118, 110, 0.06)'); // Teal
+            gradient2.addColorStop(1, 'transparent');
+
+            ctx.fillStyle = gradient2;
+            ctx.fillRect(0, 0, width, height);
+        };
+
+        const animate = () => {
+            ctx.clearRect(0, 0, width, height);
+
+            // Smooth mouse interpolation
+            mouseX += (targetMouseX - mouseX) * 0.05;
+            mouseY += (targetMouseY - mouseY) * 0.05;
+
+            drawNebula();
+
+            stars.forEach(star => {
+                star.update();
+                star.draw();
+            });
+
+            shootingStars.forEach(shootingStar => {
+                shootingStar.update();
+                shootingStar.draw();
+            });
+
+            animationFrameId = requestAnimationFrame(animate);
+        };
+
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        window.addEventListener('mousemove', handleMouseMove);
+        animate();
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+            window.removeEventListener('mousemove', handleMouseMove);
+            cancelAnimationFrame(animationFrameId);
+        };
+    }, []);
+
+    return (
+        <canvas
+            ref={canvasRef}
+            style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                zIndex: 0, // Behind content but in front of base background
+                pointerEvents: 'none',
+                background: 'transparent' // Let base gradient show through
+            }}
+        />
+    );
+};
+
+export default SpaceBackground;

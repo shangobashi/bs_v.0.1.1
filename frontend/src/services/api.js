@@ -50,6 +50,7 @@ class AgentAPI {
       const response = await this.client.post('/agent/execute', {
         message,
         provider,
+        model_name: options.model,
         agent_id: options.agentId,
         temperature: options.temperature || 0.7,
         max_tokens: options.maxTokens || 2048,

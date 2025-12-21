@@ -1,24 +1,8 @@
 import React from 'react';
+import ReactMarkdown from 'react-markdown';
 import '../styles/components.css';
 
-// Function to format response text into readable paragraphs
-const formatResponseText = (text) => {
-  if (!text) return text;
-
-  // Split by double newlines to create paragraph breaks
-  const paragraphs = text.split(/\n\n+/).filter(p => p.trim());
-
-  return paragraphs.map((paragraph, idx) => (
-    <p key={idx} className="response-paragraph">
-      {paragraph.split('\n').map((line, lineIdx) => (
-        <React.Fragment key={lineIdx}>
-          {line}
-          {lineIdx < paragraph.split('\n').length - 1 && <br />}
-        </React.Fragment>
-      ))}
-    </p>
-  ));
-};
+import { sanitizeErrorMessage } from '../utils/errorUtils';
 
 function MessageDisplay({ message }) {
   if (message.type === 'user') {
@@ -38,7 +22,21 @@ function MessageDisplay({ message }) {
           </span>
           {message.streaming && <span className="streaming-indicator">Streaming...</span>}
         </div>
-        <div className="message-content">{formatResponseText(message.content)}</div>
+
+        {message.thoughts && (
+          <div className="agent-thoughts-container">
+            <details open={message.streaming}>
+              <summary>Thinking Process</summary>
+              <div className="agent-thoughts-content">
+                <ReactMarkdown>{message.thoughts}</ReactMarkdown>
+              </div>
+            </details>
+          </div>
+        )}
+
+        <div className="message-content">
+          <ReactMarkdown>{message.content}</ReactMarkdown>
+        </div>
         {(message.tokens || message.time) && (
           <div className="message-footer">
             {message.tokens && <span>Tokens: {message.tokens}</span>}
@@ -52,7 +50,7 @@ function MessageDisplay({ message }) {
   if (message.type === 'error') {
     return (
       <div className="message message-error">
-        <div className="message-content">Error: {message.content}</div>
+        <div className="message-content">{sanitizeErrorMessage(message.content)}</div>
       </div>
     );
   }

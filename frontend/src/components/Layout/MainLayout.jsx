@@ -1,16 +1,22 @@
 import React from 'react';
 import Sidebar from './Sidebar';
 import { useSidebar } from '../../context/SidebarContext';
+import { useLocation } from 'react-router-dom';
+import SpaceBackground from './SpaceBackground';
 import './Layout.css';
 
 const MainLayout = ({ children }) => {
     const { isSidebarOpen, toggleSidebar, closeSidebar } = useSidebar();
+    const location = useLocation();
+    const isCleanPage = location.pathname === '/' || location.pathname === '/chat';
 
     return (
         <div className="nova-layout">
             <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
             <main className={`nova-content ${isSidebarOpen ? 'sidebar-open' : ''}`}>
+                {!isCleanPage && <SpaceBackground />}
+
                 {/* Sidebar Toggle Button removed from here to be placed in individual page headers for perfect alignment */}
 
                 {/* Backdrop for closing sidebar on mobile/tablet */}

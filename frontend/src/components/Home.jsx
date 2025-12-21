@@ -255,7 +255,6 @@ const Home = () => {
                     <p>
                         Our decisions honor interdependence, not just individual brilliance. We build systems that honor resilience and human connection.
                     </p>
-                    <NovaButton variant="default">Read Manifesto</NovaButton>
                 </div>
             </section>
         </div>

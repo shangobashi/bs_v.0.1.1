@@ -24,6 +24,8 @@ class Settings(BaseSettings):
     ANTHROPIC_API_KEY: Optional[str] = None
     OPENAI_API_KEY: Optional[str] = None
     GOOGLE_API_KEY: Optional[str] = None
+    OPENROUTER_API_KEY: Optional[str] = None
+    OLLAMA_BASE_URL: str = "http://localhost:11434/v1"
 
     # Agent Configuration
     MAX_CONCURRENT_AGENTS: int = 10

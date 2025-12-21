@@ -4,8 +4,71 @@ import agentAPI from '../services/api';
 import { formatAgentName } from '../utils/formatters';
 import GlassCard from './Nova/GlassCard';
 import NovaButton from './Nova/NovaButton';
+import GlassModal from './Nova/GlassModal';
 import SidebarToggle from './Layout/SidebarToggle';
 import '../styles/components.css';
+
+// Simple Markdown Renderer for Bio
+const BioRenderer = ({ content }) => {
+  if (!content) return <p className="bio-content">No biography available.</p>;
+
+  // Split by double newline to get paragraphs/blocks
+  const blocks = content.split(/\n\n+/);
+
+  return (
+    <div className="bio-content">
+      {blocks.map((block, index) => {
+        // Headers
+        if (block.startsWith('### ')) {
+          return <h3 key={index}>{block.replace('### ', '')}</h3>;
+        }
+        if (block.startsWith('## ')) {
+          return <h3 key={index}>{block.replace('## ', '')}</h3>; // Map ## to h3 for size consistency
+        }
+
+        // Lists
+        if (block.includes('\n- ') || block.startsWith('- ')) {
+          const items = block.split('\n').filter(line => line.trim().startsWith('- '));
+          return (
+            <ul key={index}>
+              {items.map((item, i) => (
+                <li key={i}>{parseInline(item.replace('- ', ''))}</li>
+              ))}
+            </ul>
+          );
+        }
+
+        // Standard Paragraph
+        return <p key={index}>{parseInline(block)}</p>;
+      })}
+    </div>
+  );
+};
+
+// Helper to parse inline styles like **bold** and *italic*
+const parseInline = (text) => {
+  if (!text) return '';
+
+  // Split by bold markers
+  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+
+  return parts.map((part, index) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={index}>{part.slice(2, -2)}</strong>;
+    }
+    // Check for italics
+    const italicParts = part.split(/(\*[^*]+\*)/g);
+    if (italicParts.length > 1) {
+      return italicParts.map((subPart, subIndex) => {
+        if (subPart.startsWith('*') && subPart.endsWith('*')) {
+          return <em key={`${index}-${subIndex}`}>{subPart.slice(1, -1)}</em>;
+        }
+        return subPart;
+      });
+    }
+    return part;
+  });
+};
 
 function SwarmSelector() {
   const [swarms, setSwarms] = useState([]);
@@ -15,19 +78,19 @@ function SwarmSelector() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const [expandedAgentId, setExpandedAgentId] = useState(null);
+  const [selectedAgent, setSelectedAgent] = useState(null);
 
   useEffect(() => {
     loadSwarms();
     loadAgents();
   }, []);
 
-  const toggleAgent = (agentId) => {
-    if (expandedAgentId === agentId) {
-      setExpandedAgentId(null);
-    } else {
-      setExpandedAgentId(agentId);
-    }
+  const handleAgentClick = (agent) => {
+    setSelectedAgent(agent);
+  };
+
+  const closeAgentModal = () => {
+    setSelectedAgent(null);
   };
 
   const loadSwarms = async () => {
@@ -168,63 +231,31 @@ function SwarmSelector() {
               swarmAgents.map((agent) => (
                 <GlassCard
                   key={agent.id}
-                  className={`agent-card ${expandedAgentId === agent.id ? 'expanded' : ''}`}
-                  onClick={() => toggleAgent(agent.id)}
+                  className="agent-card"
+                  onClick={() => handleAgentClick(agent)}
+                  interactive={true}
                   style={{
                     cursor: 'pointer',
-                    gridColumn: expandedAgentId === agent.id ? '1 / -1' : 'auto',
-                    transition: 'all 0.3s ease'
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: '100%'
                   }}
                 >
-                  <div className="agent-header" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                    <h4 style={{ margin: 0, color: '#FFF' }}>{formatAgentName(agent.name)}</h4>
-                    <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', fontFamily: 'monospace' }}>{agent.id}</span>
+                  <div className="agent-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
+                    <div>
+                      <h4 style={{ margin: 0, color: '#FFF', fontSize: '1.2rem' }}>{formatAgentName(agent.name)}</h4>
+                      <p style={{ color: '#FFB800', fontSize: '0.9rem', marginTop: '0.25rem' }}>{agent.title}</p>
+                    </div>
+                    <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.3)', fontFamily: 'monospace', background: 'rgba(255,255,255,0.05)', padding: '2px 6px', borderRadius: '4px' }}>{agent.id}</span>
                   </div>
-                  <p style={{ color: '#FFB800', fontSize: '0.85rem', marginBottom: '0.5rem' }}>{agent.title}</p>
-                  <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem', marginBottom: '1rem' }}>
-                    <strong>Specialization:</strong> {agent.specialization}
+
+                  <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem', marginBottom: '1rem', lineHeight: '1.5', flex: 1 }}>
+                    <strong style={{ color: 'rgba(255,255,255,0.8)' }}>Specialization:</strong> {agent.specialization}
                   </p>
 
-                  {expandedAgentId === agent.id ? (
-                    <div className="agent-details" style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <h5 style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Biography</h5>
-                        <p style={{ color: 'rgba(255,255,255,0.8)', lineHeight: '1.6' }}>{agent.biography || "No biography available."}</p>
-                      </div>
-
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <h5 style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Expertise</h5>
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                          {agent.expertise_areas && agent.expertise_areas.length > 0 ? (
-                            agent.expertise_areas.map(area => (
-                              <span key={area} style={{
-                                background: 'rgba(255,184,0,0.1)',
-                                color: '#FFB800',
-                                padding: '0.25rem 0.75rem',
-                                borderRadius: '12px',
-                                fontSize: '0.8rem',
-                                border: '1px solid rgba(255,184,0,0.2)'
-                              }}>{area}</span>
-                            ))
-                          ) : (
-                            <span style={{ color: 'rgba(255,255,255,0.5)' }}>General Professional</span>
-                          )}
-                        </div>
-                      </div>
-
-                      <NovaButton
-                        variant="primary"
-                        style={{ marginTop: '1rem' }}
-                        onClick={() => navigate('/chat', { state: { agentId: agent.id } })}
-                      >
-                        Initiate Chat
-                      </NovaButton>
-                    </div>
-                  ) : (
-                    <div style={{ marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
-                      <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', fontStyle: 'italic' }}>Click to view details</span>
-                    </div>
-                  )}
+                  <div style={{ marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                    <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', fontStyle: 'italic' }}>Click to view details</span>
+                  </div>
                 </GlassCard>
               ))
             ) : (
@@ -233,8 +264,74 @@ function SwarmSelector() {
           </div>
         </div>
       )}
+
+      {/* Agent Details Modal */}
+      <GlassModal
+        isOpen={!!selectedAgent}
+        onClose={closeAgentModal}
+        className="agent-modal"
+      >
+        {selectedAgent && (
+          <div className="agent-details-content">
+            <div className="agent-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '1rem' }}>
+              <div>
+                <h2 style={{ margin: 0, color: '#FFF', fontSize: '2rem' }}>{formatAgentName(selectedAgent.name)}</h2>
+                <p style={{ color: '#FFB800', fontSize: '1.1rem', marginTop: '0.5rem' }}>{selectedAgent.title}</p>
+              </div>
+              <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.3)', fontFamily: 'monospace', background: 'rgba(255,255,255,0.05)', padding: '4px 8px', borderRadius: '4px' }}>{selectedAgent.id}</span>
+            </div>
+
+            <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1rem', marginBottom: '2rem', lineHeight: '1.6', fontStyle: 'italic' }}>
+              {selectedAgent.specialization}
+            </p>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: '2rem' }}>
+              {/* Left Column: Biography */}
+              <div style={{ paddingRight: '1rem', borderRight: '1px solid rgba(255,255,255,0.05)' }}>
+                <h5 style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '1rem', letterSpacing: '0.05em' }}>Biography</h5>
+                <BioRenderer content={selectedAgent.biography} />
+              </div>
+
+              {/* Right Column: Expertise & Actions */}
+              <div>
+                <div style={{ marginBottom: '2rem' }}>
+                  <h5 style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '1rem', letterSpacing: '0.05em' }}>Expertise</h5>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                    {selectedAgent.expertise_areas && selectedAgent.expertise_areas.length > 0 ? (
+                      selectedAgent.expertise_areas.map(area => (
+                        <span key={area} style={{
+                          background: 'rgba(255,184,0,0.1)',
+                          color: '#FFB800',
+                          padding: '0.4rem 0.8rem',
+                          borderRadius: '8px',
+                          fontSize: '0.85rem',
+                          border: '1px solid rgba(255,184,0,0.2)'
+                        }}>{area}</span>
+                      ))
+                    ) : (
+                      <span style={{ color: 'rgba(255,255,255,0.5)' }}>General Professional</span>
+                    )}
+                  </div>
+                </div>
+
+                <NovaButton
+                  variant="primary"
+                  className="btn-brown-hover"
+                  style={{ width: '100%', padding: '1rem', fontSize: '1rem' }}
+                  onClick={() => {
+                    navigate('/chat', { state: { agentId: selectedAgent.id } });
+                  }}
+                >
+                  Initiate Chat
+                </NovaButton>
+              </div>
+            </div>
+          </div>
+        )}
+      </GlassModal>
     </div>
-  );
+  )
 }
+
 
 export default SwarmSelector;

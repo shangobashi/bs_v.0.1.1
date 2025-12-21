@@ -1,18 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import agentAPI from '../services/api';
 import SidebarToggle from './Layout/SidebarToggle';
 import '../styles/components.css';
 
 import NovaButton from './Nova/NovaButton';
-import NovaSelect from './Nova/NovaSelect';
+import NovaDropdown from './Nova/NovaDropdown';
 
 function ApiKeyManager() {
+  const [model, setModel] = useState('Claude Opus 4.1');
   const [provider, setProvider] = useState('claude');
   const [apiKey, setApiKey] = useState('');
   const [showKey, setShowKey] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
+
+  const [configuredProviders, setConfiguredProviders] = useState([]);
+
+  useEffect(() => {
+    checkConfiguredKeys();
+  }, []);
+
+  const checkConfiguredKeys = () => {
+    const providers = ['claude', 'openai', 'gemini', 'openrouter', 'ollama'];
+    const configured = providers.filter(p => localStorage.getItem(`${p}_key_configured`) === 'true');
+    setConfiguredProviders(configured);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,11 +42,28 @@ function ApiKeyManager() {
       setMessage(`${provider.charAt(0).toUpperCase() + provider.slice(1)} API key configured successfully`);
       setApiKey('');
       localStorage.setItem(`${provider}_key_configured`, 'true');
+      checkConfiguredKeys();
     } catch (error) {
       setMessageType('error');
       setMessage(`Error: ${error.message}`);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleRemoveKey = async (providerToRemove) => {
+    if (window.confirm(`Are you sure you want to remove the API key for ${providerToRemove}?`)) {
+      try {
+        // We set it to empty string to "remove" it on backend
+        await agentAPI.setApiKey(providerToRemove, '');
+        localStorage.removeItem(`${providerToRemove}_key_configured`);
+        checkConfiguredKeys();
+        setMessageType('success');
+        setMessage(`${providerToRemove} key removed successfully`);
+      } catch (error) {
+        setMessageType('error');
+        setMessage(`Error removing key: ${error.message}`);
+      }
     }
   };
 
@@ -57,33 +87,54 @@ function ApiKeyManager() {
         <form onSubmit={handleSubmit} className="key-form">
           <div className="form-group">
             <label htmlFor="provider">Provider</label>
-            <NovaSelect
-              id="provider"
-              value={provider}
-              onChange={(e) => setProvider(e.target.value)}
-              disabled={loading}
-              style={{
-                background: 'rgba(0, 0, 0, 0.3)',
-                padding: '0.75rem 1rem',
-                borderRadius: '0.5rem',
-                border: '1px solid var(--border-subtle)'
+            <label htmlFor="model">Model</label>
+            <NovaDropdown
+              value={model}
+              onChange={(val) => {
+                setModel(val);
+                const v = val.toLowerCase();
+                // Map model to provider
+                if (v.includes('claude')) setProvider('claude');
+                else if (v.includes('gpt-5') || v.includes('gpt-4')) setProvider('openai');
+                else if (v.includes('gemini')) setProvider('gemini');
+                else if (v.includes('gpt-oss')) setProvider('openrouter');
+                else if (v.includes('moonshotai') || v.includes('kimi')) setProvider('openrouter');
+                else if (v.includes('qwen') || v.includes('deepseek') || v.includes('llama')) {
+                  // Heuristic: OpenRouter models usually have '/' (e.g. qwen/qwen...)
+                  // Local/Ollama models usually don't (e.g. qwen2, llama3)
+                  if (v.includes('/') || v.includes(':free')) {
+                    setProvider('openrouter');
+                  } else {
+                    setProvider('ollama');
+                  }
+                }
               }}
-            >
-              <option value="claude">Claude 4.5 Sonnet (Anthropic)</option>
-              <option value="openai">GPT-5.1 (OpenAI)</option>
-              <option value="gemini">Gemini 3 Pro (Google)</option>
-            </NovaSelect>
+              options={[
+                { value: 'Claude Opus 4.5', label: 'Claude Opus 4.5' },
+                { value: 'Claude Sonnet 4.5', label: 'Claude Sonnet 4.5' },
+                { value: 'GPT-5-High', label: 'GPT-5-High' },
+                { value: 'GPT-5-Low', label: 'GPT-5-Low' },
+                { value: 'Gemini 3', label: 'Gemini 3' },
+                { value: 'meta-llama/llama-3.3-70b-instruct:free', label: 'Llama 3.3 70B (Free)' },
+                { value: 'qwen/qwen-2.5-coder-32b-instruct:free', label: 'Qwen 2.5 Coder 32B (Free)' },
+                { value: 'moonshotai/kimi-k2-0711:free', label: 'Kimi K2 (Free)' },
+                { value: 'qwen2', label: 'Qwen 2 (Local)' },
+                { value: 'deepseek-coder-v2', label: 'Deepseek Coder V2 (Local)' },
+                { value: 'llama3', label: 'Llama 3 (Local)' }
+              ]}
+              style={{ height: '42px' }}
+            />
           </div>
 
           <div className="form-group">
-            <label htmlFor="apiKey">API Key</label>
+            <label htmlFor="apiKey">API Key / Base URL</label>
             <div className="key-input-wrapper">
               <input
                 id="apiKey"
                 type={showKey ? 'text' : 'password'}
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
-                placeholder="Enter your API key"
+                placeholder="Enter API Key or Ollama Base URL"
                 disabled={loading}
                 className="key-input"
               />
@@ -120,7 +171,7 @@ function ApiKeyManager() {
             disabled={loading}
             style={{ width: '100%', marginTop: '1.5rem', padding: '1rem' }}
           >
-            {loading ? 'Configuring...' : 'Configure API Key'}
+            {loading ? 'Configuring...' : 'Configure'}
           </NovaButton>
         </form>
 
@@ -145,8 +196,48 @@ function ApiKeyManager() {
                 Google AI Studio
               </a>
             </li>
+            <li>
+              <strong>OpenRouter (for Llama 3.3, Qwen 2.5, Kimi):</strong> Get your key from{' '}
+              <a href="https://openrouter.ai/keys" target="_blank" rel="noopener noreferrer" className="nova-link">
+                openrouter.ai
+              </a>
+            </li>
+            <li>
+              <strong>Local Models (Ollama):</strong> No key required. Enter your Ollama Base URL (default: <code>http://localhost:11434</code>) in the API Key field.
+            </li>
           </ul>
         </div>
+
+        {configuredProviders.length > 0 && (
+          <div className="stored-keys-section" style={{ marginTop: '3rem', borderTop: '1px solid var(--border-subtle)', paddingTop: '2rem' }}>
+            <h3 style={{ color: '#FFF', marginBottom: '1rem' }}>Stored API Keys</h3>
+            <div className="stored-keys-list">
+              {configuredProviders.map((prov) => (
+                <div key={prov} style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '1rem',
+                  background: 'rgba(0,0,0,0.2)',
+                  marginBottom: '0.5rem',
+                  borderRadius: '0.5rem',
+                  border: '1px solid var(--border-subtle)'
+                }}>
+                  <span style={{ color: 'var(--text-primary)', textTransform: 'capitalize' }}>
+                    {prov === 'openrouter' ? 'OpenRouter (Free Models)' : prov === 'ollama' ? 'Ollama (Local)' : prov}
+                  </span>
+                  <NovaButton
+                    variant="secondary"
+                    onClick={() => handleRemoveKey(prov)}
+                    style={{ padding: '0.5rem 1rem', fontSize: '0.9rem', borderColor: 'var(--error)', color: 'var(--error)' }}
+                  >
+                    Remove
+                  </NovaButton>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

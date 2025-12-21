@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/griot-questionnaire.css';
 
 /**
- * GriotQuestionnaire Component
+ * GriotQuestionnaire Component - Ubuntu Glass Redesign
  *
- * Presents a multi-phase questionnaire in Griot's voice to collect user needs,
- * organization info, and situation assessment. Routes users to appropriate swarms
- * based on their answers.
+ * Presents a multi-phase questionnaire in Griot's voice to collect user needs.
+ * Uses a glassmorphism UI with deep "Ubuntu Connection" theming.
  */
 function GriotQuestionnaire({ onComplete }) {
-  const [phase, setPhase] = useState(0); // 0-5 representing phases
+  const [phase, setPhase] = useState(0);
   const [answers, setAnswers] = useState({
     primaryNeed: null,
     organizationName: '',
@@ -21,6 +20,12 @@ function GriotQuestionnaire({ onComplete }) {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // Scroll to top on phase change
+  useEffect(() => {
+    const container = document.querySelector('.questionnaire-container');
+    if (container) container.scrollTop = 0;
+  }, [phase]);
 
   const primaryNeeds = [
     { id: 'wealth_management', label: 'Wealth Management & Financial Planning', swarm: 'BluePadsGrowth' },
@@ -41,31 +46,14 @@ function GriotQuestionnaire({ onComplete }) {
   ];
 
   const handleNextPhase = () => {
-    // Validation
-    if (phase === 0 && !answers.primaryNeed) {
-      setError('Please select your primary need to continue');
-      return;
-    }
-    if (phase === 1 && !answers.organizationName.trim()) {
-      setError('Please enter your organization name');
-      return;
-    }
-    if (phase === 2 && (!answers.organizationSize || !answers.organizationStage || !answers.industry)) {
-      setError('Please complete all organization profile fields');
-      return;
-    }
-    if (phase === 3 && !answers.currentSituation.trim()) {
-      setError('Please describe your current situation and objectives');
-      return;
-    }
+    if (phase === 0 && !answers.primaryNeed) return setError('Please select your primary need to continue');
+    if (phase === 1 && !answers.organizationName.trim()) return setError('Please enter your organization name');
+    if (phase === 2 && (!answers.organizationSize || !answers.organizationStage || !answers.industry)) return setError('Please complete all organization profile fields');
+    if (phase === 3 && !answers.currentSituation.trim()) return setError('Please describe your current situation');
 
     setError(null);
-
-    if (phase < 5) {
-      setPhase(phase + 1);
-    } else {
-      submitQuestionnaire();
-    }
+    if (phase < 5) setPhase(phase + 1);
+    else submitQuestionnaire();
   };
 
   const handlePreviousPhase = () => {
@@ -78,7 +66,6 @@ function GriotQuestionnaire({ onComplete }) {
   const submitQuestionnaire = async () => {
     setLoading(true);
     try {
-      // Use agentAPI service instead of direct fetch to handle base URL correctly
       const result = await import('../services/api').then(module =>
         module.default.submitGriotQuestionnaire({
           primary_need: answers.primaryNeed,
@@ -90,11 +77,7 @@ function GriotQuestionnaire({ onComplete }) {
           secondary_needs: answers.secondaryNeeds,
         })
       );
-
-      // Call onComplete with activation plan
-      if (onComplete) {
-        onComplete(result);
-      }
+      if (onComplete) onComplete(result);
     } catch (err) {
       setError(`Error processing your responses: ${err.message}`);
       setLoading(false);
@@ -119,11 +102,9 @@ function GriotQuestionnaire({ onComplete }) {
               <h2>PHASE 1: WHAT BRINGS YOU HERE?</h2>
               <p className="phase-subtitle">Every journey begins with understanding the true need.</p>
             </div>
-
             <p className="griot-voice">
-              Look at these paths. Which one calls to you most strongly?
+              "Look at these paths. Which one calls to you most strongly? I am here to guide you to the right team."
             </p>
-
             <div className="options-grid">
               {primaryNeeds.map((need) => (
                 <div
@@ -134,9 +115,8 @@ function GriotQuestionnaire({ onComplete }) {
                   <input
                     type="radio"
                     name="primaryNeed"
-                    value={need.id}
                     checked={answers.primaryNeed === need.id}
-                    onChange={() => setAnswers({ ...answers, primaryNeed: need.id })}
+                    onChange={() => { }}
                   />
                   <label>{need.label}</label>
                 </div>
@@ -152,11 +132,9 @@ function GriotQuestionnaire({ onComplete }) {
               <h2>PHASE 2: ORGANIZATION PROFILE</h2>
               <p className="phase-subtitle">Tell me about your organization.</p>
             </div>
-
             <p className="griot-voice">
-              To guide you well, I must understand the organization you serve.
+              "To guide you well, I must understand the collective you serve. Who are you?"
             </p>
-
             <div className="form-group">
               <label htmlFor="orgName">Organization Name</label>
               <input
@@ -165,9 +143,9 @@ function GriotQuestionnaire({ onComplete }) {
                 placeholder="Your organization name"
                 value={answers.organizationName}
                 onChange={(e) => setAnswers({ ...answers, organizationName: e.target.value })}
+                autoFocus
               />
             </div>
-
             <div className="form-group">
               <label htmlFor="industry">Industry or Sector</label>
               <input
@@ -185,40 +163,46 @@ function GriotQuestionnaire({ onComplete }) {
         return (
           <div className="griot-phase">
             <div className="phase-header">
-              <h2>PHASE 2 (cont.): ORGANIZATION SCALE</h2>
+              <h2>PHASE 2 (cont.): SCALE & STAGE</h2>
               <p className="phase-subtitle">Help me understand your scale and stage.</p>
             </div>
-
             <div className="form-group">
               <label>Organization Size</label>
-              <div className="options-list">
+              <div className="options-grid" style={{ gridTemplateColumns: '1fr 1fr' }}>
                 {organizationSizes.map((size, idx) => (
-                  <label key={idx} className="checkbox-label">
+                  <div
+                    key={idx}
+                    className={`option-card ${answers.organizationSize === size ? 'selected' : ''}`}
+                    onClick={() => setAnswers({ ...answers, organizationSize: size })}
+                  >
                     <input
                       type="radio"
                       name="size"
                       checked={answers.organizationSize === size}
-                      onChange={() => setAnswers({ ...answers, organizationSize: size })}
+                      onChange={() => { }}
                     />
-                    {size}
-                  </label>
+                    <label>{size}</label>
+                  </div>
                 ))}
               </div>
             </div>
-
             <div className="form-group">
               <label>Organization Stage</label>
-              <div className="options-list">
+              <div className="options-grid" style={{ gridTemplateColumns: '1fr 1fr' }}>
                 {organizationStages.map((stage, idx) => (
-                  <label key={idx} className="checkbox-label">
+                  <div
+                    key={idx}
+                    className={`option-card ${answers.organizationStage === stage ? 'selected' : ''}`}
+                    onClick={() => setAnswers({ ...answers, organizationStage: stage })}
+                  >
                     <input
                       type="radio"
                       name="stage"
                       checked={answers.organizationStage === stage}
-                      onChange={() => setAnswers({ ...answers, organizationStage: stage })}
+                      onChange={() => { }}
                     />
-                    {stage}
-                  </label>
+                    <label>{stage}</label>
+                  </div>
                 ))}
               </div>
             </div>
@@ -232,27 +216,25 @@ function GriotQuestionnaire({ onComplete }) {
               <h2>PHASE 3: SITUATION & OBJECTIVES</h2>
               <p className="phase-subtitle">What are you facing? What do you want to achieve?</p>
             </div>
-
             <p className="griot-voice">
-              I will tell you what I see, honestly and with care. Share the truth of your situation.
+              "I will tell you what I see, honestly and with care. Share the truth of your situation."
             </p>
-
             <div className="form-group">
               <label htmlFor="situation">Your Situation & Objectives</label>
               <textarea
                 id="situation"
-                placeholder="Describe your current situation, challenges, and what you want to achieve. Be honest and detailed."
+                placeholder="Describe your current situation, challenges, and what you want to achieve..."
                 value={answers.currentSituation}
                 onChange={(e) => setAnswers({ ...answers, currentSituation: e.target.value })}
                 rows="6"
+                autoFocus
               />
             </div>
-
             {primaryNeed && (
               <div className="info-box">
                 <p>
                   Based on your primary need of <strong>{primaryNeed.label}</strong>,
-                  I will be activating the <strong>{primaryNeed.swarm}</strong> team to support you.
+                  I will be activating the <strong>{primaryNeed.swarm}</strong> team.
                 </p>
               </div>
             )}
@@ -266,11 +248,9 @@ function GriotQuestionnaire({ onComplete }) {
               <h2>PHASE 4: SECONDARY NEEDS</h2>
               <p className="phase-subtitle">Are there other areas where you need support?</p>
             </div>
-
             <p className="griot-voice">
-              Sometimes the journey requires more than one guide. Which other teams might serve you?
+              "Sometimes the journey requires more than one guide. Which other teams might serve you?"
             </p>
-
             <div className="options-list">
               {secondaryNeedsList.map((need) => (
                 <label key={need.id} className="checkbox-label">
@@ -279,7 +259,7 @@ function GriotQuestionnaire({ onComplete }) {
                     checked={answers.secondaryNeeds.includes(need.id)}
                     onChange={() => toggleSecondaryNeed(need.id)}
                   />
-                  {need.label}
+                  <span>{need.label}</span>
                 </label>
               ))}
             </div>
@@ -293,30 +273,27 @@ function GriotQuestionnaire({ onComplete }) {
               <h2>PHASE 5: CLOSING REFLECTION</h2>
               <p className="phase-subtitle">Let me show you the path forward.</p>
             </div>
-
             <div className="summary-box">
               <p className="griot-voice">
-                I have listened deeply and I understand your path. Let me guide you toward the teams best suited for your journey.
+                "I have listened deeply and I understand your path. Let me guide you toward the teams best suited for your journey."
               </p>
-
               <div className="answer-summary">
                 <h3>Your Answers:</h3>
                 <div className="summary-item">
-                  <strong>Primary Need:</strong> {primaryNeeds.find(n => n.id === answers.primaryNeed)?.label}
+                  <strong>Primary Need</strong> {primaryNeeds.find(n => n.id === answers.primaryNeed)?.label}
                 </div>
                 <div className="summary-item">
-                  <strong>Organization:</strong> {answers.organizationName} ({answers.industry})
+                  <strong>Organization</strong> {answers.organizationName} ({answers.industry})
                 </div>
                 <div className="summary-item">
-                  <strong>Size & Stage:</strong> {answers.organizationSize} • {answers.organizationStage}
+                  <strong>Size & Stage</strong> {answers.organizationSize} • {answers.organizationStage}
                 </div>
                 {answers.secondaryNeeds.length > 0 && (
                   <div className="summary-item">
-                    <strong>Secondary Needs:</strong> {answers.secondaryNeeds.join(', ')}
+                    <strong>Secondary Needs</strong> {answers.secondaryNeeds.join(', ')}
                   </div>
                 )}
               </div>
-
               <p className="griot-final-message">
                 "I am because we are" — Your choice is ultimately yours.
                 I offer wisdom, not ultimatums. But I believe these teams
@@ -347,14 +324,14 @@ function GriotQuestionnaire({ onComplete }) {
               className={`phase-dot ${idx === phase ? 'active' : ''} ${idx < phase ? 'completed' : ''}`}
               title={name}
             >
-              {idx + 1}
+              {idx < phase ? '✓' : idx + 1}
             </div>
           ))}
         </div>
 
         {error && <div className="error-message">{error}</div>}
 
-        <div className="phase-content">
+        <div className="phase-content" key={phase}>
           {renderPhase()}
         </div>
 
@@ -366,7 +343,6 @@ function GriotQuestionnaire({ onComplete }) {
           >
             ← Previous
           </button>
-
           <button
             className="btn btn-primary"
             onClick={handleNextPhase}

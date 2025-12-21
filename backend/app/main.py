@@ -99,11 +99,25 @@ async def stream_agent(websocket: WebSocket):
 
             # Stream response
             try:
-                async for chunk in agent_service.stream_agent(request):
-                    await websocket.send_json({
-                        "type": "delta",
-                        "content": chunk
-                    })
+                async for event in agent_service.stream_agent(request):
+                    # event is now a dict: {"type": "thought"|"content"|"error", "content": "..."}
+                    
+                    if event["type"] == "error":
+                        await websocket.send_json({
+                            "type": "error",
+                            "error": event["content"]
+                        })
+                    elif event["type"] == "thought":
+                        await websocket.send_json({
+                            "type": "thought",
+                            "content": event["content"]
+                        })
+                    else:
+                        # Regular content
+                        await websocket.send_json({
+                            "type": "delta",
+                            "content": event["content"]
+                        })
 
                 # Send completion
                 await websocket.send_json({"type": "complete"})
@@ -137,6 +151,13 @@ async def set_api_key(request: ApiKeyRequest):
     elif provider == "gemini":
         settings.GOOGLE_API_KEY = api_key
         env_var = "GOOGLE_API_KEY"
+    elif provider == "openrouter":
+        settings.OPENROUTER_API_KEY = api_key
+        env_var = "OPENROUTER_API_KEY"
+    elif provider == "ollama":
+        # Ollama doesn't strictly need a key, but we can store the base URL if provided, or just ignore
+        settings.OLLAMA_BASE_URL = api_key if api_key.startswith("http") else "http://localhost:11434/v1"
+        env_var = "OLLAMA_BASE_URL"
     else:
         raise HTTPException(status_code=400, detail="Unknown provider")
 

@@ -93,8 +93,18 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center 25%;
-    /* Adjusted for face focus */
+    object-position: center 30%;
+    animation: kenBurns 20s infinite alternate ease-in-out;
+}
+
+@keyframes kenBurns {
+    0% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(1.1);
+    }
 }
 
 .hero-overlay-gradient {
@@ -104,9 +114,9 @@
     right: 0;
     bottom: 0;
     background: linear-gradient(180deg,
-            rgba(5, 3, 2, 0.2) 0%,
-            rgba(5, 3, 2, 0.1) 40%,
-            rgba(5, 3, 2, 0.8) 80%,
+            rgba(5, 3, 2, 0.4) 0%,
+            rgba(5, 3, 2, 0.1) 30%,
+            rgba(5, 3, 2, 0.7) 70%,
             #050302 100%);
 }
 

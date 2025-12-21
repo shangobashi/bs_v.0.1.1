@@ -6,6 +6,8 @@ class ModelProvider(str, Enum):
     CLAUDE = "claude"
     OPENAI = "openai"
     GEMINI = "gemini"
+    OLLAMA = "ollama"
+    OPENROUTER = "openrouter"
 
 class AgentRole(str, Enum):
     LABS = "labs"
@@ -17,6 +19,7 @@ class AgentRequest(BaseModel):
     """Request schema for agent execution"""
     message: str
     provider: ModelProvider
+    model_name: Optional[str] = None
     agent_id: Optional[str] = None  # BluePadsGlobal agent identifier
     agent_role: Optional[AgentRole] = None
     temperature: float = 0.7
