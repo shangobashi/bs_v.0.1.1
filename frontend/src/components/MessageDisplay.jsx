@@ -4,7 +4,7 @@ import '../styles/components.css';
 
 import { sanitizeErrorMessage } from '../utils/errorUtils';
 
-function MessageDisplay({ message }) {
+function MessageDisplay({ message, showThoughts = false }) {
   if (message.type === 'user') {
     return (
       <div className="message message-user">
@@ -20,12 +20,11 @@ function MessageDisplay({ message }) {
           <span className="agent-label">
             {message.agentName ? `${message.agentName} says:` : (message.provider ? `${message.provider.toUpperCase()} Response` : 'Agent Response')}
           </span>
-          {message.streaming && <span className="streaming-indicator">Streaming...</span>}
         </div>
 
-        {message.thoughts && (
+        {message.thoughts && showThoughts && (
           <div className="agent-thoughts-container">
-            <details open={message.streaming}>
+            <details open={true}>
               <summary>Thinking Process</summary>
               <div className="agent-thoughts-content">
                 <ReactMarkdown>{message.thoughts}</ReactMarkdown>
@@ -37,6 +36,7 @@ function MessageDisplay({ message }) {
         <div className="message-content">
           <ReactMarkdown>{message.content}</ReactMarkdown>
         </div>
+
         {(message.tokens || message.time) && (
           <div className="message-footer">
             {message.tokens && <span>Tokens: {message.tokens}</span>}
@@ -50,7 +50,7 @@ function MessageDisplay({ message }) {
   if (message.type === 'error') {
     return (
       <div className="message message-error">
-        <div className="message-content">{sanitizeErrorMessage(message.content)}</div>
+        <div className="message-content">{typeof sanitizeErrorMessage === 'function' ? sanitizeErrorMessage(message.content) : message.content}</div>
       </div>
     );
   }

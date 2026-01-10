@@ -26,7 +26,7 @@ const Home = () => {
             {/* Hero Section */}
             <header className="nova-hero-v3">
                 <div className="hero-background">
-                    <img src={heroImage} alt="Blue Swarm AI" />
+                    <img src={heroImage} alt="Blue Swarm AI" className="hero-img-blend" />
                     <div className="hero-overlay-gradient"></div>
                 </div>
 

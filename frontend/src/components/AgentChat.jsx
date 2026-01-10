@@ -467,243 +467,89 @@ const AgentChat = () => {
   return (
     <div className="nova-chat-container" style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: '1rem', padding: '2rem' }}>
       {/* Header Section */}
-      <GlassCard className="chat-header" style={{ padding: '1rem 2rem', position: 'relative', zIndex: 50 }}>
+      <GlassCard className="chat-header" style={{ overflow: 'visible' }}>
         <div className="chat-header-content">
-          <div className="chat-header-left">
-            <SidebarToggle />
-            <div className="agent-select-container">
-              <NovaDropdown
-                value={selectedAgent ? selectedAgent.id : ''}
-                placeholder="Select an Agent"
-                style={{
-                  height: '26px',
-                  fontSize: '0.75rem',
-                  padding: '0 10px'
-                }}
-                options={agents.map(agent => {
-                  // Helper to format agent name sparsely
-                  const formatAgentName = (name) => {
-                    if (!name) return '';
-                    let formatted = name;
-                    formatted = formatted.replace(/BluePadsResearch_AgentSwarm_ClaudeCLI/g, 'BP Research');
-                    formatted = formatted.replace(/BluePadsGrowth_AgentSwarm_ClaudeCLI/g, 'BP Growth');
-                    formatted = formatted.replace(/BluePadsGlobal/g, 'BP Global');
+          <div className="header-row header-row-primary">
+            <div className="header-identity-group">
+              <SidebarToggle />
+              <div className="agent-select-container">
+                <NovaDropdown
+                  value={selectedAgent ? selectedAgent.id : ''}
+                  placeholder="Select an Agent"
+                  style={{ height: '38px', fontSize: '0.9rem' }}
+                  options={agents.map(agent => {
+                    // Helper to format agent name sparsely
+                    const formatAgentName = (name) => {
+                      if (!name) return '';
+                      let formatted = name;
+                      formatted = formatted.replace(/BluePadsResearch_AgentSwarm_ClaudeCLI/g, 'BP Research');
+                      formatted = formatted.replace(/BluePadsGrowth_AgentSwarm_ClaudeCLI/g, 'BP Growth');
+                      formatted = formatted.replace(/BluePadsGlobal/g, 'BP Global');
 
-                    const nameParts = formatted.split(' ');
-                    if (nameParts.length > 1 && !nameParts[0].includes('.')) {
-                      formatted = `${nameParts[0][0]}.${nameParts.slice(1).join(' ')}`;
+                      const nameParts = formatted.split(' ');
+                      if (nameParts.length > 1 && !nameParts[0].includes('.')) {
+                        formatted = `${nameParts[0][0]}.${nameParts.slice(1).join(' ')}`;
+                      }
+                      return formatted;
+                    };
+
+                    const formatSwarmName = (swarm) => {
+                      if (!swarm) return '';
+                      let formatted = swarm;
+                      if (formatted.includes('BluePadsResearch')) return 'BP Research';
+                      if (formatted.includes('BluePadsGrowth')) return 'BP Growth';
+                      if (formatted.includes('BluePadsLabs')) return 'BP Labs';
+                      if (formatted.includes('BluePadsVision')) return 'BP Vision';
+                      if (formatted.includes('BluePadsLegal')) return 'BP Legal';
+                      if (formatted.includes('BluePadsGlobal')) return 'BP Global';
+                      formatted = formatted.replace(/_AgentSwarm_/g, ' ');
+                      formatted = formatted.replace(/_/g, ' ');
+                      return formatted;
                     }
-                    return formatted;
-                  };
 
-                  const formatSwarmName = (swarm) => {
-                    if (!swarm) return '';
-                    let formatted = swarm;
-                    if (formatted.includes('BluePadsResearch')) return 'BP Research';
-                    if (formatted.includes('BluePadsGrowth')) return 'BP Growth';
-                    if (formatted.includes('BluePadsLabs')) return 'BP Labs';
-                    if (formatted.includes('BluePadsVision')) return 'BP Vision';
-                    if (formatted.includes('BluePadsLegal')) return 'BP Legal';
-                    if (formatted.includes('BluePadsGlobal')) return 'BP Global';
-                    formatted = formatted.replace(/_AgentSwarm_/g, ' ');
-                    formatted = formatted.replace(/_/g, ' ');
-                    return formatted;
-                  }
+                    let displayName = agent.name;
+                    const swarmName = agent.swarm_display_name ? `(${agent.swarm_display_name})` : (agent.swarm ? `(${formatSwarmName(agent.swarm)})` : '');
+                    const title = agent.role || agent.title ? ` - ${agent.role || agent.title} ` : '';
 
-                  let displayName = formatAgentName(agent.name);
-                  const swarmName = agent.swarm ? `(${formatSwarmName(agent.swarm)})` : '';
-                  const title = agent.role || agent.title ? ` - ${agent.role || agent.title} ` : '';
-
-                  let fullLabel = `${displayName} ${swarmName}${title} `;
-                  fullLabel = fullLabel.replace(/\s+/g, ' ').replace(/\(\s*\)/g, '').trim();
-
-                  if (fullLabel.length > 60) fullLabel = fullLabel.substring(0, 57) + '...';
-
-                  return { value: agent.id, label: fullLabel };
-                })}
-                onChange={async (agentId) => {
-                  const basicAgent = agents.find(a => a.id === agentId);
-                  setSelectedAgent(basicAgent);
-                  try {
-                    const fullAgent = await agentAPI.getAgent(agentId);
-                    setSelectedAgent(fullAgent);
-                  } catch (error) {
-                    console.error("Failed to fetch full agent details:", error);
-                  }
-                }}
-              />
-            </div>
-
-            {status && (
-              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                {Object.entries(status.providers).map(([name, active]) => (
-                  <span key={name} style={{
-                    fontSize: '0.75rem',
-                    padding: '4px 10px',
-                    borderRadius: '12px',
-                    background: active ? 'rgba(0, 255, 148, 0.1)' : 'rgba(255, 255, 255, 0.05)',
-                    color: active ? '#00FF94' : 'var(--text-muted)',
-                    border: active ? '1px solid rgba(0, 255, 148, 0.2)' : 'none',
-                    whiteSpace: 'nowrap',
-                    textTransform: 'uppercase',
-                    fontWeight: '600',
-                    letterSpacing: '0.05em',
-                    height: '26px',
-                    display: 'flex',
-                    alignItems: 'center'
-                  }}>
-                    {name.toUpperCase()}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div className="chat-header-right">
-            <label style={{
-              fontSize: '0.8rem',
-              color: wsConnected ? 'var(--text-secondary)' : 'var(--text-muted)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.75rem',
-              cursor: wsConnected ? 'pointer' : 'not-allowed',
-              whiteSpace: 'nowrap',
-              padding: '0.5rem 0.75rem',
-              borderRadius: '8px',
-              background: wsConnected ? 'rgba(255, 184, 0, 0.05)' : 'rgba(255, 255, 255, 0.02)',
-              border: wsConnected ? '1px solid rgba(255, 184, 0, 0.1)' : '1px solid rgba(255, 255, 255, 0.05)',
-              transition: 'all 0.3s ease'
-            }}>
-              <span style={{
-                width: '8px',
-                height: '8px',
-                borderRadius: '50%',
-                background: wsConnected ? '#00FF94' : '#FF4B4B',
-                boxShadow: wsConnected ? '0 0 8px #00FF94' : 'none'
-              }}></span>
-              Streaming
-              <div style={{
-                width: '32px',
-                height: '18px',
-                background: useStreaming ? 'rgba(255,184,0,0.3)' : 'rgba(255,255,255,0.1)',
-                borderRadius: '9px',
-                position: 'relative',
-                border: useStreaming ? '1px solid rgba(255,184,0,0.5)' : '1px solid rgba(255,255,255,0.2)',
-                transition: 'all 0.3s ease'
-              }}>
-                <input
-                  type="checkbox"
-                  checked={useStreaming}
-                  onChange={(e) => setUseStreaming(e.target.checked && wsConnected)}
-                  disabled={!wsConnected}
-                  style={{ opacity: 0, width: '100%', height: '100%', position: 'absolute', cursor: wsConnected ? 'pointer' : 'not-allowed' }}
+                    let fullLabel = `${displayName} ${swarmName}${title} `;
+                    fullLabel = fullLabel.replace(/\s+/g, ' ').replace(/\(\s*\)/g, '').trim();
+                    // Truncation handled by CSS text-overflow
+                    return { value: agent.id, label: fullLabel };
+                  })}
+                  onChange={async (agentId) => {
+                    const basicAgent = agents.find(a => a.id === agentId);
+                    setSelectedAgent(basicAgent);
+                    try {
+                      const fullAgent = await agentAPI.getAgent(agentId);
+                      setSelectedAgent(fullAgent);
+                    } catch (error) {
+                      console.error("Failed to fetch full agent details:", error);
+                    }
+                  }}
                 />
-                <div style={{
-                  width: '12px',
-                  height: '12px',
-                  background: useStreaming ? '#FFB800' : 'rgba(255,255,255,0.5)',
-                  borderRadius: '50%',
-                  position: 'absolute',
-                  top: '2px',
-                  left: useStreaming ? '16px' : '2px',
-                  transition: 'left 0.3s ease'
-                }} />
               </div>
-            </label>
-
-            <div style={{ width: '220px' }}>
-              <NovaDropdown
-                value={model}
-                onChange={(val) => {
-                  setModel(val);
-                  const v = val.toLowerCase();
-                  // Auto-set provider based on model
-                  if (v.includes('claude')) setProvider('claude');
-                  else if (v.includes('gpt-5') || v.includes('gpt-4')) setProvider('openai');
-                  else if (v.includes('gemini')) setProvider('gemini');
-                  else if (v.includes('gpt-oss')) setProvider('openrouter');
-                  else if (v.includes('moonshotai') || v.includes('kimi')) setProvider('openrouter');
-                  else if (v.includes('qwen') || v.includes('deepseek') || v.includes('llama')) {
-                    if (v.includes('/') || v.includes(':free')) {
-                      setProvider('openrouter');
-                    } else {
-                      setProvider('ollama');
-                    }
-                  }
-                }}
-                options={[
-                  { value: 'Claude Opus 4.5', label: 'Claude Opus 4.5' },
-                  { value: 'Claude Sonnet 4.5', label: 'Claude Sonnet 4.5' },
-                  { value: 'Claude Haiku 4.5', label: 'Claude Haiku 4.5' },
-                  { value: 'GPT-5.2 Thinking', label: 'GPT-5.2 Thinking' },
-                  { value: 'GPT-5.2 Instant', label: 'GPT-5.2 Instant' },
-                  { value: 'GPT-5.2 Codex', label: 'GPT-5.2 Codex' },
-                  { value: 'GPT-4.5', label: 'GPT-4.5' },
-                  { value: 'Gemini 3 Flash', label: 'Gemini 3 Flash' },
-                  { value: 'Gemini 3 Pro', label: 'Gemini 3 Pro' },
-                  { value: 'Gemini 3 Deep Think', label: 'Gemini 3 Deep Think' },
-                  { value: 'meta-llama/llama-3.3-70b-instruct:free', label: 'Llama 3.3 70B (Free)' },
-                  { value: 'qwen/qwen-2.5-coder-32b-instruct', label: 'Qwen 2.5 Coder 32B' },
-                  { value: 'moonshotai/kimi-k2:free', label: 'Kimi K2 (Free)' },
-                  { value: 'qwen2', label: 'Qwen 2 (Local)' },
-                  { value: 'deepseek-coder-v2', label: 'Deepseek Coder V2 (Local)' },
-                  { value: 'llama3', label: 'Llama 3 (Local)' }
-                ]}
-                style={{ height: '42px' }}
-              />
             </div>
 
-
-            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+            <div className="header-actions">
+              <div style={{ position: 'relative' }}>
                 <NovaButton
                   variant="ghost"
                   onClick={() => setShowSaveMenu(!showSaveMenu)}
-                  title="Save Chat Options"
-                  style={{
-                    minWidth: 'auto',
-                    height: '42px',
-                    padding: '0 1.2rem',
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    border: '1px solid var(--border-subtle)',
-                    display: 'flex',
-                    alignItems: 'center'
-                  }}
+                  style={{ height: '38px', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border-subtle)' }}
                 >
-                  Save Chat ▾
+                  Save Conversation ▾
                 </NovaButton>
-
                 {showSaveMenu && (
                   <GlassCard style={{
-                    position: 'absolute',
-                    top: '100%',
-                    right: 0,
-                    marginTop: '0.5rem',
-                    padding: '0.5rem',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '0.5rem',
-                    zIndex: 1000,
-                    minWidth: '160px',
-                    background: 'rgba(20, 20, 20, 0.95)',
-                    backdropFilter: 'blur(20px)',
-                    border: '1px solid var(--border-subtle)',
-                    boxShadow: '0 4px 20px rgba(0,0,0,0.5)'
+                    position: 'absolute', top: '100%', right: 0, marginTop: '0.4rem',
+                    padding: '0.4rem', display: 'flex', flexDirection: 'column', gap: '0.3rem',
+                    zIndex: 1000, minWidth: '140px', background: 'rgba(10, 8, 5, 0.98)',
+                    border: '1px solid var(--accent-primary)', boxShadow: '0 10px 40px rgba(0,0,0,0.8)'
                   }}>
-                    <NovaButton
-                      variant="ghost"
-                      onClick={() => { downloadChat('json'); setShowSaveMenu(false); }}
-                      style={{ justifyContent: 'flex-start', padding: '0.5rem', fontSize: '0.9rem' }}
-                    >
-                      As JSON
-                    </NovaButton>
-                    <NovaButton
-                      variant="ghost"
-                      onClick={() => { downloadChat('md'); setShowSaveMenu(false); }}
-                      style={{ justifyContent: 'flex-start', padding: '0.5rem', fontSize: '0.9rem' }}
-                    >
-                      As Markdown
-                    </NovaButton>
+                    <NovaButton variant="ghost" onClick={() => { downloadChat('json'); setShowSaveMenu(false); }}
+                      style={{ justifyContent: 'flex-start', height: '32px', fontSize: '0.8rem' }}>As JSON</NovaButton>
+                    <NovaButton variant="ghost" onClick={() => { downloadChat('md'); setShowSaveMenu(false); }}
+                      style={{ justifyContent: 'flex-start', height: '32px', fontSize: '0.8rem' }}>As Markdown</NovaButton>
                   </GlassCard>
                 )}
               </div>
@@ -711,26 +557,114 @@ const AgentChat = () => {
               <NovaButton
                 variant="ghost"
                 onClick={clearChat}
-                title="Clear Chat"
-                style={{
-                  minWidth: 'auto',
-                  height: '42px',
-                  padding: '0 1.2rem',
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  border: '1px solid var(--border-subtle)',
-                  display: 'flex',
-                  alignItems: 'center'
-                }}
+                style={{ height: '38px', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border-subtle)', color: 'rgba(255,255,255,0.5)' }}
               >
-                Clear
+                CLEAR
               </NovaButton>
+              {sessionId && Object.keys(sessionArtifacts).length > 0 && (
+                <NovaButton variant="ghost" onClick={() => setShowArtifacts(true)} style={{ minWidth: 'auto', padding: '0 1.2rem', height: '38px' }}>
+                  Artifacts
+                </NovaButton>
+              )}
+            </div>
+          </div>
+
+          <div className="header-row header-row-secondary">
+            <div className="header-config-group">
+              <div className="streaming-toggle-group">
+                <div style={{
+                  width: '8px', height: '8px', borderRadius: '50%',
+                  background: useStreaming ? '#00FF94' : '#FF6B6B',
+                  boxShadow: useStreaming
+                    ? '0 0 10px rgba(0, 255, 148, 0.6)'
+                    : '0 0 10px rgba(255, 107, 107, 0.6)',
+                  transition: 'all 0.3s ease'
+                }}></div>
+                <span style={{ fontSize: '0.7rem', fontWeight: '700', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  STREAM THOUGHTS
+                </span>
+                <div
+                  onClick={() => wsConnected && setUseStreaming(!useStreaming)}
+                  style={{
+                    width: '28px', height: '14px', background: useStreaming ? 'rgba(255,184,0,0.2)' : 'rgba(255,255,255,0.05)',
+                    borderRadius: '10px', position: 'relative', cursor: wsConnected ? 'pointer' : 'not-allowed',
+                    border: '1px solid ' + (useStreaming ? 'rgba(255,184,0,0.4)' : 'rgba(255,255,255,0.1)'),
+                    transition: 'all 0.3s ease'
+                  }}
+                >
+                  <div style={{
+                    width: '10px', height: '10px', background: useStreaming ? '#FFB800' : 'rgba(255,255,255,0.4)',
+                    borderRadius: '50%', position: 'absolute', top: '1px', left: useStreaming ? '15px' : '1px',
+                    transition: 'left 0.2s cubic-bezier(0.16, 1, 0.3, 1)'
+                  }} />
+                </div>
+              </div>
+
+              <div className="model-select-container">
+                <NovaDropdown
+                  value={model}
+                  onChange={(val) => {
+                    setModel(val);
+                    const v = val.toLowerCase();
+                    if (v.includes('claude')) setProvider('claude');
+                    else if (v.includes('gpt-5') || v.includes('gpt-4')) setProvider('openai');
+                    else if (v.includes('gemini')) setProvider('gemini');
+                    else if (v.includes('gpt-oss') || v.includes('moonshotai') || v.includes('kimi')) setProvider('openrouter');
+                    else if (v.includes('qwen') || v.includes('deepseek') || v.includes('llama')) {
+                      setProvider(v.includes('/') || v.includes(':free') ? 'openrouter' : 'ollama');
+                    }
+                  }}
+                  options={[
+                    { value: 'Claude Opus 4.5', label: 'Claude Opus 4.5' },
+                    { value: 'Claude Sonnet 4.5', label: 'Claude Sonnet 4.5' },
+                    { value: 'Claude Haiku 4.5', label: 'Claude Haiku 4.5' },
+                    { value: 'GPT-5.2 Thinking', label: 'GPT-5.2 Thinking' },
+                    { value: 'GPT-5.2 Instant', label: 'GPT-5.2 Instant' },
+                    { value: 'GPT-5.2 Codex', label: 'GPT-5.2 Codex' },
+                    { value: 'GPT-4.5', label: 'GPT-4.5' },
+                    { value: 'Gemini 3 Flash', label: 'Gemini 3 Flash' },
+                    { value: 'Gemini 3 Pro', label: 'Gemini 3 Pro' },
+                    { value: 'Gemini 3 Deep Think', label: 'Gemini 3 Deep Think' },
+                    { value: 'meta-llama/llama-3.3-70b-instruct:free', label: 'Llama 3.3 70B (Free)' },
+                    { value: 'qwen/qwen-2.5-coder-32b-instruct', label: 'Qwen 2.5 Coder 32B' },
+                    { value: 'moonshotai/kimi-k2:free', label: 'Kimi K2 (Free)' },
+                    { value: 'qwen2', label: 'Qwen 2 (Local)' },
+                    { value: 'deepseek-coder-v2', label: 'Deepseek Coder V2 (Local)' },
+                    { value: 'llama3', label: 'Llama 3 (Local)' }
+                  ]}
+                  style={{ height: '38px', fontSize: '0.85rem' }}
+                />
+              </div>
             </div>
 
-            {sessionId && Object.keys(sessionArtifacts).length > 0 && (
-              <NovaButton variant="ghost" onClick={() => setShowArtifacts(true)} style={{ minWidth: 'auto', padding: '0.6rem 1.2rem' }}>
-                Artifacts
-              </NovaButton>
-            )}
+            <div className="provider-deck">
+              {[
+                { id: 'claude', label: 'CLAUDE' },
+                { id: 'openai', label: 'OPENAI' },
+                { id: 'gemini', label: 'GOOGLE' },
+                { id: 'opensource', label: 'OPEN SOURCE' }
+              ].map((prov) => {
+                const isActive = prov.id === 'opensource'
+                  ? ['ollama', 'openrouter', 'lmstudio', 'local'].includes(provider)
+                  : provider === prov.id;
+                return (
+                  <div
+                    key={prov.id}
+                    className="provider-btn"
+                    style={{
+                      background: isActive ? 'rgba(192, 132, 252, 0.15)' : 'transparent',
+                      color: isActive ? '#C084FC' : 'rgba(255, 255, 255, 0.3)',
+                      border: isActive ? '1px solid rgba(192, 132, 252, 0.4)' : '1px solid transparent',
+                      cursor: 'default', // Non-interactive indicator
+                      display: 'flex', alignItems: 'center', transition: 'all 0.3s ease',
+                      boxShadow: isActive ? '0 0 15px rgba(192, 132, 252, 0.1)' : 'none'
+                    }}
+                  >
+                    {prov.label}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </GlassCard >
@@ -789,7 +723,7 @@ const AgentChat = () => {
                 </div>
               )}
               {messages.map((msg, index) => (
-                <MessageDisplay key={index} message={msg} />
+                <MessageDisplay key={index} message={msg} showThoughts={useStreaming} />
               ))}
               {loading && (
                 <div style={{ display: 'flex', gap: '1rem', padding: '1rem', alignItems: 'center' }}>

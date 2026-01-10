@@ -154,56 +154,171 @@
     padding: 10px;
 }
 
-/* --- Chat Header Layout --- */
+/* --- Chat Header Layout (Restored High-Fidelity) --- */
+.chat-header {
+    flex-shrink: 0;
+    margin-bottom: var(--space-4);
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-subtle);
+    background: rgba(20, 20, 25, 0.6);
+}
+
 .chat-header-content {
     display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-6);
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    position: relative;
+    z-index: 10;
+}
+
+/* Base Header Row */
+.header-row {
+    display: flex;
     align-items: center;
+    gap: 1rem;
     width: 100%;
 }
 
-.chat-header-left {
+.header-identity-group {
     display: flex;
-    gap: var(--space-4);
     align-items: center;
-    flex: 1 1 400px;
-    /* Allow growing, base width 400px */
-    flex-wrap: wrap;
+    gap: 1rem;
+    flex: 1;
+    /* Take available space */
+    min-width: 0;
+    /* Critical for shrinking */
 }
 
-.chat-header-right {
+.header-actions {
     display: flex;
-    gap: var(--space-4);
     align-items: center;
-    flex: 1 1 auto;
-    justify-content: flex-end;
-    flex-wrap: wrap;
+    gap: 1rem;
+    flex-shrink: 0;
+}
+
+.header-config-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 2;
+    /* Allocate more space for config */
+    min-width: 0;
+}
+
+.provider-deck {
+    display: flex;
+    flex: 1;
+    gap: 4px;
+    min-width: 0;
+}
+
+/* Consistent sizing for provider buttons */
+.provider-btn {
+    flex: 1 1 0 !important;
+    /* Force equal sizes */
+    height: 38px !important;
+    font-size: 0.75rem !important;
+    padding: 0 4px !important;
+    justify-content: center !important;
+    border-radius: 6px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .agent-select-container {
     flex: 1;
-    min-width: 250px;
-    max-width: 500px;
-    /* Prevent it from getting too wide on huge screens */
+    min-width: 0;
+    /* Allows text truncation to work */
 }
 
-@media (max-width: 768px) {
-    .chat-header-content {
-        flex-direction: column;
-        align-items: stretch;
-        gap: var(--space-4);
+.streaming-toggle-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-subtle);
+    white-space: nowrap;
+    height: 38px;
+}
+
+/* --- Responsive Logic (3-Tier) --- */
+
+/* 1. Large Screen (Default above) */
+
+/* 2. Tablet / Compact Desktop (1100px and below) */
+@media (max-width: 1100px) {
+    .header-row {
+        flex-direction: column !important;
+        align-items: stretch !important;
     }
 
-    .chat-header-left,
-    .chat-header-right {
-        flex: 1 1 100%;
-        justify-content: flex-start;
+    .header-identity-group,
+    .header-config-group,
+    .header-actions,
+    .provider-deck {
+        width: 100% !important;
+        flex: none !important;
+        min-width: 0 !important;
+        box-sizing: border-box;
+    }
+
+    /* Synergetic Alignment: Match buttons to inputs below */
+    .header-actions {
+        display: grid !important;
+        grid-template-columns: 240px 1fr !important;
+        /* Matches Stream Toggle + Model Select */
+        gap: 12px !important;
+    }
+
+    /* Force 'Save' button in actions to fill the grid cell */
+    .header-actions>div:first-child,
+    .header-actions>.nova-btn {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+    }
+
+    .header-config-group {
+        display: grid !important;
+        grid-template-columns: 240px 1fr !important;
+        gap: 12px !important;
+    }
+
+    .streaming-toggle-group {
+        width: 100% !important;
+        box-sizing: border-box;
+        justify-content: space-between;
     }
 
     .agent-select-container {
-        max-width: 100%;
+        width: auto !important;
+        flex: 1 !important;
+    }
+}
+
+/* 3. Mobile / Narrow View (768px and below) */
+@media (max-width: 768px) {
+    .chat-header {
+        padding: 0.75rem !important;
+    }
+
+    .header-actions,
+    .header-config-group {
+        grid-template-columns: 1fr 1fr !important;
+        /* Symmetric split for touch */
+    }
+
+    .header-identity-group {
+        flex-direction: row;
+    }
+
+    .provider-btn {
+        font-size: 0.65rem !important;
+        padding: 0 2px !important;
     }
 }
 

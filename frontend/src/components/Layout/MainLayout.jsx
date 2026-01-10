@@ -8,14 +8,14 @@ import './Layout.css';
 const MainLayout = ({ children }) => {
     const { isSidebarOpen, toggleSidebar, closeSidebar } = useSidebar();
     const location = useLocation();
-    const isCleanPage = location.pathname === '/' || location.pathname === '/chat';
+    const isCleanPage = location.pathname === '/chat';
 
     return (
         <div className="nova-layout">
             <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
             <main className={`nova-content ${isSidebarOpen ? 'sidebar-open' : ''}`}>
-                {!isCleanPage && <SpaceBackground />}
+                <SpaceBackground />
 
                 {/* Sidebar Toggle Button removed from here to be placed in individual page headers for perfect alignment */}
 

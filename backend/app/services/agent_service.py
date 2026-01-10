@@ -459,6 +459,9 @@ ACTIVATED SWARMS:
 {', '.join([s['name'] for s in plan.get('activated_swarms', [])])}
 {artifacts_str}
 You are part of this active engagement. Use this context to inform your responses.
+
+IMPORTANT INSTRUCTION:
+Check the conversation history before responding. If you have already introduced yourself (Name, Division, Specialty) in this session, DO NOT repeat the full introduction. Only introduce yourself if this is the very first message of the conversation or if explicitly asked. Be concise.
 """
 
 class StreamProcessor:

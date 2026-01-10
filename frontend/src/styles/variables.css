@@ -1,60 +1,61 @@
-/* Nova Design System - Variables */
 :root {
-    /* --- Palette: Nova (Deep Warm Void + Golden Hour) --- */
+    /* --- Nova Design System: Core Colors --- */
+    --white: #ffffff;
+    --black: #000000;
 
     /* Backgrounds */
-    --bg-void: #030202;
-    /* Deepest warm black */
-    --bg-surface: #0D0905;
-    /* Very dark warm brown/black for cards */
-    --bg-glass: rgba(13, 9, 5, 0.6);
-    /* Glassmorphism base with warm tint */
-    --bg-glass-hover: rgba(25, 18, 10, 0.7);
-
-    /* Accents (Warm Lighting) */
-    --accent-primary: #FFB800;
-    /* Honey Gold */
-    --accent-secondary: #FF5C00;
-    /* Sunset Orange */
-    --accent-glow: rgba(255, 184, 0, 0.4);
-    /* Stronger warm glow */
+    --bg-void: #030014;
+    /* Deep space black/purple */
+    --bg-glass: rgba(10, 10, 12, 0.7);
+    --bg-glass-strong: rgba(10, 10, 12, 0.9);
+    --bg-surface: rgba(255, 255, 255, 0.03);
 
     /* Text */
-    --text-primary: #FFFBF0;
-    /* Warm White */
-    --text-secondary: #A8A29E;
-    /* Warm Gray (Stone-400) */
-    --text-muted: #57534E;
-    /* Warm Dark Gray (Stone-600) */
+    --text-primary: #FFFFFF;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --text-tertiary: rgba(255, 255, 255, 0.5);
+    --text-muted: rgba(255, 255, 255, 0.3);
+
+    /* Accents - "Afrofuturist/Space" */
+    --accent-primary: #FFB800;
+    /* Gold */
+    --accent-secondary: #FF5C00;
+    /* Sunset Orange */
+    --accent-tertiary: #C084FC;
+    /* Purple/Void */
+    --accent-success: #00FF94;
+    /* Neo Green */
+    --accent-error: #FF4B4B;
+    /* Neo Red */
 
     /* Borders */
-    --border-subtle: rgba(255, 184, 0, 0.1);
-    /* Subtle gold tint */
-    --border-highlight: rgba(255, 184, 0, 0.25);
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-highlight: rgba(255, 255, 255, 0.15);
+    --border-accent: rgba(255, 184, 0, 0.3);
 
-    /* --- Typography: Inter --- */
-    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --tracking-tight: -0.02em;
-    --tracking-tighter: -0.04em;
+    /* Effects */
+    --blur-glass: 20px;
+    --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    --glow-primary: 0 0 20px rgba(255, 184, 0, 0.2);
 
-    /* --- Spacing --- */
+    /* Spacing */
     --space-1: 0.25rem;
     --space-2: 0.5rem;
     --space-3: 0.75rem;
     --space-4: 1rem;
-    --space-5: 1.25rem;
     --space-6: 1.5rem;
     --space-8: 2rem;
-    --space-10: 2.5rem;
     --space-12: 3rem;
-    --space-16: 4rem;
 
-    /* --- Effects --- */
-    --blur-glass: 16px;
-    /* Increased blur for premium feel */
-    --shadow-card: 0 8px 32px -4px rgba(0, 0, 0, 0.5);
-    --shadow-glow: 0 0 30px var(--accent-glow);
+    /* Typography */
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    --leading-tight: 1.2;
+    --leading-normal: 1.5;
+    --tracking-tight: -0.02em;
 
-    /* --- Animation --- */
-    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    /* Animations */
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-in: cubic-bezier(0.32, 0, 0.67, 0);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 }
