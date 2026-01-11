@@ -86,27 +86,39 @@
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 0;
-    /* Seamless blend mask: Fades the image container out at the bottom to reveal stars */
-    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 70%, rgba(0, 0, 0, 0) 100%);
-    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 70%, rgba(0, 0, 0, 0) 100%);
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    /* Blend bottom into the bento grid section */
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 80%, rgba(0, 0, 0, 0) 100%);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 80%, rgba(0, 0, 0, 0) 100%);
 }
 
 .hero-background img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center 30%;
-    animation: kenBurns 20s infinite alternate ease-in-out;
+    height: 85vh;
+    /* Elegant, non-monstruous scale */
+    width: auto;
+    object-fit: contain;
+    mix-blend-mode: screen;
+    /* Interwoven: stars living inside the dark zones of the image */
+    opacity: 0.9;
+    filter: brightness(1.1) contrast(1.1);
+    animation: kenBurns 40s infinite alternate ease-in-out;
+
+    /* Elegant radial feathering */
+    mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0) 90%);
+    -webkit-mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0) 90%);
 }
 
 @keyframes kenBurns {
     0% {
-        transform: scale(1);
+        transform: scale(1) translateY(0);
     }
 
     100% {
-        transform: scale(1.1);
+        transform: scale(1.05) translateY(-2%);
     }
 }
 
@@ -116,14 +128,9 @@
     left: 0;
     right: 0;
     bottom: 0;
-    /* Gradient matches the previous version but allows transparency at bottom for blending */
-    background: linear-gradient(180deg,
-            rgba(5, 3, 2, 0.3) 0%,
-            rgba(5, 3, 2, 0.1) 40%,
-            rgba(5, 3, 2, 0.4) 80%,
-            rgba(5, 3, 2, 0.8) 100%);
-    mix-blend-mode: multiply;
-    /* Better blending with the image below */
+    /* Subtle vignettes to focus center */
+    background: radial-gradient(circle at center, transparent 30%, rgba(5, 3, 2, 0.4) 100%);
+    z-index: 2;
 }
 
 .hero-content-centered {
@@ -132,6 +139,7 @@
     max-width: 1000px;
     padding: 0 2rem;
     animation: fadeInUp 1s ease-out;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
 }
 
 @keyframes fadeInUp {

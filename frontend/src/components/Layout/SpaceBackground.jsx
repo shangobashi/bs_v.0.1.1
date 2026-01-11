@@ -228,30 +228,94 @@ const SpaceBackground = () => {
             }
         }
 
+        class MajesticComet {
+            constructor() {
+                this.active = false;
+                this.timer = Math.random() * 30000 + 40000; // Rare
+            }
+
+            trigger() {
+                this.active = true;
+                this.x = -200;
+                this.y = Math.random() * height * 0.5;
+                this.speed = 1.2;
+                this.len = 600;
+                this.angle = (5 + Math.random() * 10) * Math.PI / 180;
+                this.opacity = 0;
+            }
+
+            update() {
+                if (!this.active) {
+                    if (this.timer <= 0) {
+                        this.trigger();
+                        this.timer = Math.random() * 60000 + 60000;
+                    } else {
+                        this.timer -= 16;
+                    }
+                    return;
+                }
+
+                this.x += Math.cos(this.angle) * this.speed;
+                this.y += Math.sin(this.angle) * this.speed;
+
+                if (this.x < width * 0.5 && this.opacity < 1) this.opacity += 0.005;
+                if (this.x > width * 0.7) this.opacity -= 0.005;
+
+                if (this.opacity <= 0 && this.x > width) {
+                    this.active = false;
+                }
+            }
+
+            draw() {
+                if (!this.active) return;
+                ctx.save();
+                ctx.globalAlpha = this.opacity * 0.3;
+                ctx.globalCompositeOperation = 'screen';
+
+                const grad = ctx.createLinearGradient(
+                    this.x, this.y,
+                    this.x - Math.cos(this.angle) * this.len,
+                    this.y - Math.sin(this.angle) * this.len
+                );
+                grad.addColorStop(0, '#00FBFF');
+                grad.addColorStop(0.2, '#FFB800');
+                grad.addColorStop(1, 'transparent');
+
+                ctx.strokeStyle = grad;
+                ctx.lineWidth = 4;
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = '#00FBFF';
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y);
+                ctx.lineTo(this.x - Math.cos(this.angle) * this.len, this.y - Math.sin(this.angle) * this.len);
+                ctx.stroke();
+                ctx.restore();
+            }
+        }
+
         const initCosmos = () => {
             stars = [];
-            // Dec 21 Density Settings
-            [1000, 400, 100].forEach((count, layer) => {
+            [1200, 500, 150].forEach((count, layer) => {
                 for (let i = 0; i < count; i++) stars.push(new Star(layer));
             });
 
             galaxies = [];
-            for (let i = 0; i < 4; i++) galaxies.push(new Galaxy());
+            for (let i = 0; i < 5; i++) galaxies.push(new Galaxy());
 
             clusters = [];
-            for (let i = 0; i < 6; i++) clusters.push(new StarCluster());
+            for (let i = 0; i < 8; i++) clusters.push(new StarCluster());
 
             shootingStars = [new ShootingStar(), new ShootingStar()];
+            majesticComet = new MajesticComet();
         };
 
         const drawAtmosphere = () => {
-            // Deep Purple Nebula Core - The signature of Dec 21
-            ctx.fillStyle = '#020203'; // Deep Black Base
+            ctx.fillStyle = '#020203';
             ctx.fillRect(0, 0, width, height);
 
             ctx.globalCompositeOperation = 'screen';
             const g1 = ctx.createRadialGradient(width * 0.5, height * 0.5, 0, width * 0.5, height * 0.5, width * 0.8);
-            g1.addColorStop(0, 'rgba(40, 20, 100, 0.15)'); // Purple haze
+            g1.addColorStop(0, 'rgba(40, 20, 100, 0.18)');
             g1.addColorStop(1, 'rgba(0,0,0,0)');
             ctx.fillStyle = g1;
             ctx.fillRect(0, 0, width, height);
@@ -267,6 +331,8 @@ const SpaceBackground = () => {
             clusters.forEach(c => c.draw());
             stars.forEach(s => { s.update(); s.draw(); });
             shootingStars.forEach(s => { s.update(); s.draw(); });
+            majesticComet.update();
+            majesticComet.draw();
 
             animationFrameId = requestAnimationFrame(animate);
         };
@@ -291,7 +357,8 @@ const SpaceBackground = () => {
             className="space-background-canvas"
             style={{
                 position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
-                zIndex: 0, pointerEvents: 'none', opacity: 1
+                zIndex: 0, // Base cosmic layer
+                pointerEvents: 'none', opacity: 1
             }}
         />
     );
