@@ -247,9 +247,9 @@ const Home = () => {
             {/* About Section */}
             <section id="about" className="nova-about-section">
                 <div className="about-content">
-                    <h2>About Blue Pads Labs</h2>
+                    <h2>About Blue Swarm Labs</h2>
                     <p>
-                        Blue Pads Labs centers Afro-centric identity as the competitive advantage for software engineering itself.
+                        Blue Swarm Labs centers Afro-centric identity as the competitive advantage for software engineering itself.
                         "I am because we are." In software engineering, this means we code because we're building something that matters to our communities.
                     </p>
                     <p>

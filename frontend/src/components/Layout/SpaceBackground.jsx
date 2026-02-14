@@ -150,9 +150,17 @@ const SpaceBackground = () => {
             constructor() {
                 this.x = Math.random() * width;
                 this.y = Math.random() * height;
-                this.radius = Math.random() * 300 + 100;
-                this.opacity = Math.random() * 0.12 + 0.03;
-                this.color = Math.random() > 0.5 ? '0, 251, 255' : '255, 184, 0';
+                this.radius = Math.random() * 400 + 200;
+                this.opacity = Math.random() * 0.15 + 0.05;
+                // Specific T3 Palette: Cyan, Gold, and very rare soft Lavender
+                const colorOptions = ['0, 251, 255', '255, 184, 0', '255, 184, 0', '100, 40, 200'];
+                this.color = colorOptions[Math.floor(Math.random() * colorOptions.length)];
+                this.z = 0.05;
+            }
+
+            update() {
+                this.x += (mouseX * this.z * 30) * 0.05;
+                this.y += (mouseY * this.z * 30) * 0.05;
             }
 
             draw() {
@@ -310,15 +318,27 @@ const SpaceBackground = () => {
         };
 
         const drawAtmosphere = () => {
+            // Deep base
             ctx.fillStyle = '#020203';
             ctx.fillRect(0, 0, width, height);
 
             ctx.globalCompositeOperation = 'screen';
-            const g1 = ctx.createRadialGradient(width * 0.5, height * 0.5, 0, width * 0.5, height * 0.5, width * 0.8);
-            g1.addColorStop(0, 'rgba(40, 20, 100, 0.18)');
+
+            // 1. Central Purple Nebula (The T3 'mist' - Whispering level)
+            const g1 = ctx.createRadialGradient(width * 0.5, height * 0.5, 0, width * 0.5, height * 0.5, width * 1.0);
+            g1.addColorStop(0, 'rgba(60, 20, 140, 0.07)'); // Toned down to a whisper
+            g1.addColorStop(0.6, 'rgba(30, 10, 80, 0.02)');
             g1.addColorStop(1, 'rgba(0,0,0,0)');
             ctx.fillStyle = g1;
             ctx.fillRect(0, 0, width, height);
+
+            // 2. Deep Blue/Indigo Depths
+            const g2 = ctx.createLinearGradient(0, 0, width, height);
+            g2.addColorStop(0, 'rgba(0, 15, 40, 0.1)');
+            g2.addColorStop(1, 'rgba(15, 0, 30, 0.1)');
+            ctx.fillStyle = g2;
+            ctx.fillRect(0, 0, width, height);
+
             ctx.globalCompositeOperation = 'source-over';
         };
 
@@ -328,7 +348,7 @@ const SpaceBackground = () => {
 
             drawAtmosphere();
             galaxies.forEach(g => { g.update(); g.draw(); });
-            clusters.forEach(c => c.draw());
+            clusters.forEach(c => { c.update(); c.draw(); });
             stars.forEach(s => { s.update(); s.draw(); });
             shootingStars.forEach(s => { s.update(); s.draw(); });
             majesticComet.update();
