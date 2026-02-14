@@ -274,31 +274,60 @@ class MultiAPIAgentService:
                 yield chunk.choices[0].delta.content
 
     async def _call_gemini(self, request: AgentRequest) -> tuple[str, int]:
-        """Call Google Gemini API"""
-        if not self.gemini_client:
+        """Call Google Gemini API (with REST fallback for Vercel)"""
+        if not settings.GOOGLE_API_KEY:
             return f"Have you forgotten to set your Gemini API Key in [Settings](/settings)?", 0
 
-        # Create model with system instruction if provided
-        model_name = request.model_name or "gemini-3-flash"
+        # Model mapping
+        model_name = request.model_name or "gemini-1.5-flash"
+        if "Gemini 3" in model_name: 
+            model_name = model_name.replace("Gemini 3", "gemini-1.5") # Example mapping
+        elif model_name == "Gemini 1.5 Flash":
+            model_name = "gemini-1.5-flash"
+        elif model_name == "Gemini 1.5 Pro":
+            model_name = "gemini-1.5-pro"
         
-        if model_name == "Gemini 3 Flash":
-            model_name = "gemini-3-flash"
-        elif model_name == "Gemini 3 Pro":
-            model_name = "gemini-3-pro"
-        elif model_name == "Gemini 3 Deep Think":
-            model_name = "gemini-3-deep-think"
+        # Lowercase and hyphenate if not already
+        model_name = model_name.lower().replace(" ", "-")
 
-        # Create model with system instruction if provided
-        if request.system_prompt:
-            model = self.gemini_client.GenerativeModel(
-                model_name,
-                system_instruction=request.system_prompt
-            )
-        else:
-            model = self.gemini_client.GenerativeModel(model_name)
+        # Use library if available
+        if self.gemini_client:
+            try:
+                if request.system_prompt:
+                    model = self.gemini_client.GenerativeModel(
+                        model_name,
+                        system_instruction=request.system_prompt
+                    )
+                else:
+                    model = self.gemini_client.GenerativeModel(model_name)
+                
+                response = model.generate_content(request.message)
+                return response.text, 0
+            except Exception as e:
+                print(f"Gemini library error, falling back to REST: {e}")
 
-        response = model.generate_content(request.message)
-        return response.text, 0  # Gemini doesn't provide token count in this API
+        # REST Fallback
+        try:
+            import httpx
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={settings.GOOGLE_API_KEY}"
+            
+            payload = {
+                "contents": [
+                    {
+                        "parts": [{"text": request.message}]
+                    }
+                ]
+            }
+            if request.system_prompt:
+                payload["system_instruction"] = {"parts": [{"text": request.system_prompt}]}
+            
+            async with httpx.AsyncClient() as client:
+                response = await client.post(url, json=payload, timeout=60.0)
+                response.raise_for_status()
+                data = response.json()
+                return data['candidates'][0]['content']['parts'][0]['text'], 0
+        except Exception as e:
+            return f"Error calling Gemini: {str(e)}", 0
 
     async def _stream_gemini(self, request: AgentRequest) -> AsyncGenerator[str, None]:
         """Stream Gemini response"""
