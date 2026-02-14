@@ -1,0 +1,147 @@
+{
+  "_comment": "BluePadsResearch Project Configuration Template | Copy and customize for each research project",
+
+  "project_metadata": {
+    "name": "Distributed Systems Architecture for Resource-Constrained Environments",
+    "project_id": "PROJ-2025-001",
+    "description": "Research into architectural patterns that enable scalable, reliable systems in low-bandwidth, high-latency, resource-constrained contexts",
+    "created_date": "2025-11-01",
+    "start_date": "2025-11-15",
+    "estimated_duration_months": 6,
+    "lead_researcher": "Okonkwo Chidebery",
+    "research_type": "Foundational",
+    "status": "Planning"
+  },
+
+  "research_scope": {
+    "research_questions": [
+      "How can distributed system patterns be optimized for resource-constrained environments?",
+      "What architectural decisions minimize bandwidth and computational overhead?",
+      "How do African-context constraints drive novel research directions?"
+    ],
+    "hypothesis": "Current distributed systems architectures assume relatively abundant resources. Systems designed with scarcity as a feature can be more elegant and efficient.",
+    "expected_research_outputs": [
+      "Peer-reviewed papers (3-4 target venues)",
+      "Open-source reference implementations",
+      "Architecture pattern documentation",
+      "Case studies from African startups"
+    ],
+    "success_metrics": [
+      "2-3 papers published in tier-1 venues",
+      "Reference implementations used by industry",
+      "African research citations increasing"
+    ]
+  },
+
+  "research_domains": {
+    "primary": "Software Engineering",
+    "secondary": ["Systems Design", "Applied Networks"],
+    "cross_domain_connections": ["Web3 Protocols (Jamal)", "Mobile Systems (Naledi)"]
+  },
+
+  "resource_allocation": {
+    "lead_researcher": {
+      "name": "Okonkwo Chidebery",
+      "commitment_percentage": 60,
+      "role": "Research direction, architecture design, mentorship"
+    },
+    "supporting_researchers": [
+      {
+        "name": "Adama Ndiaye",
+        "commitment_percentage": 40,
+        "role": "Architecture experimentation, creative problem-solving"
+      },
+      {
+        "name": "Naledi Khumalo",
+        "commitment_percentage": 30,
+        "role": "Mobile systems testing, user research"
+      }
+    ],
+    "engineering_support": {
+      "name": "Jabari Mwangi",
+      "infrastructure_needs": "GPU cluster (4 nodes), storage (1TB), network lab",
+      "estimated_compute_hours": 500
+    },
+    "product_integration": {
+      "name": "Ayanna Patel",
+      "focus": "Product feasibility assessment, industry partnership"
+    },
+    "timeline": "6 months"
+  },
+
+  "collaboration_scope": {
+    "cross_domain_research": true,
+    "external_partnerships": [
+      "African Startups Consortium",
+      "Regional Universities (3-4 partners)"
+    ],
+    "ethics_review_required": false,
+    "security_implications": "None specific",
+    "mentorship_opportunities": [
+      "Develop Adama as independent researcher in architecture",
+      "Develop Naledi in systems research"
+    ]
+  },
+
+  "output_contract": {
+    "lead_researcher_output": {
+      "format": "JSON with research coordination",
+      "includes": [
+        "Strategic research direction",
+        "Architecture frameworks",
+        "Mentoring plans for Adama and Naledi",
+        "Publication strategy"
+      ]
+    },
+    "supporting_researchers": {
+      "format": "Detailed research findings",
+      "includes": [
+        "Experimental results",
+        "Creative insights",
+        "Challenges and learnings"
+      ]
+    },
+    "engineering_support": {
+      "format": "Infrastructure readiness",
+      "includes": [
+        "System configuration",
+        "Performance benchmarks",
+        "Optimization recommendations"
+      ]
+    },
+    "operations": {
+      "format": "Project logistics",
+      "includes": [
+        "Timeline tracking",
+        "Resource management",
+        "Risk mitigation"
+      ]
+    },
+    "communications": {
+      "format": "Knowledge dissemination plan",
+      "includes": [
+        "Paper writing roadmap",
+        "Conference submissions",
+        "Knowledge base documentation"
+      ]
+    }
+  },
+
+  "adaptation_context": {
+    "why_this_research": "African startups building distributed systems face real constraints that Western research ignores. This research both advances understanding AND solves practical problems.",
+    "audience": [
+      "Academic: Systems research community",
+      "Practical: African startups building scalable systems",
+      "Policy: Understanding Africa's technical infrastructure needs"
+    ],
+    "impact_potential": "High — Both academic contribution and practical application",
+    "timeline_flexibility": "Medium — Core 6-month timeline, extended findings possible"
+  },
+
+  "ubuntu_philosophy": {
+    "collective_excellence": "Okonkwo, Adama, Naledi work as integrated team, not individual researchers",
+    "mentorship_integration": "Okonkwo explicitly mentors Adama and Naledi; project is mentorship vehicle",
+    "knowledge_sharing": "All findings shared with lab community; researchers cross-learn",
+    "community_responsibility": "Research serves African tech ecosystem, not just academic prestige"
+  }
+}

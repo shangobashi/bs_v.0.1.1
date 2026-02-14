@@ -6,11 +6,6 @@
             "destination": "/api/index.py"
         }
     ],
-    "functions": {
-        "api/index.py": {
-            "includeFiles": "backend/**"
-        }
-    },
     "buildCommand": "cd frontend && npm install && REACT_APP_API_BASE_URL=/api/v1 CI=false npm run build",
     "outputDirectory": "frontend/build"
 }

@@ -1,0 +1,194 @@
+{
+  "matter_id": "MATTER-2025-001",
+  "matter_name": "Example SaaS Company Legal Matter",
+  "created_date": "2025-10-30",
+
+  "client_profile": {
+    "company_name": "ExampleSaaS Inc.",
+    "company_stage": "Series A",
+    "founded_year": 2023,
+    "headquarters_country": "Belgium",
+    "headquarters_city": "Brussels",
+    "team_size": 15,
+    "primary_product": "HR Analytics Platform",
+    "product_description": "B2B SaaS platform for HR analytics and workforce insights"
+  },
+
+  "legal_matter": {
+    "matter_type": "fundraising|gdpr_audit|saas_agreement|equity_setup|ma_transaction|ip_protection|employment_compliance|general_counsel",
+    "priority": "high|medium|low",
+    "urgency": "immediate|within_2_weeks|within_month|flexible",
+    "complexity": "simple|moderate|complex|enterprise",
+    "description": "Detailed description of the legal matter or challenge"
+  },
+
+  "jurisdiction_scope": {
+    "primary_jurisdiction": "Belgium",
+    "secondary_jurisdictions": ["EU", "United States"],
+    "relevant_countries": ["Belgium", "Germany", "France", "UK", "US"],
+    "regulatory_focus": ["GDPR", "EU Data Act", "AI Act", "Employment Law"]
+  },
+
+  "fundraising_specific": {
+    "target_funding_round": "Series A|Series B|Series C",
+    "target_amount_eur": 2000000,
+    "expected_timeline": "3 months",
+    "lead_investors": ["Volta Ventures", "Pitchdrive"],
+    "investor_locations": ["Brussels", "Europe", "San Francisco"],
+    "dilution_tolerance": "acceptable|conservative|aggressive",
+    "equity_pool_requirements": 10,
+    "previous_funding_rounds": [
+      {
+        "round": "Seed",
+        "amount": 500000,
+        "date": "2023-Q3"
+      }
+    ]
+  },
+
+  "gdpr_compliance_specific": {
+    "data_processing_scope": "EU customer data",
+    "data_types": ["Personal employee data", "Customer contact information", "Usage analytics"],
+    "data_volume_estimate": "1M+ records",
+    "international_transfers": true,
+    "data_processors": ["AWS", "Google Cloud"],
+    "dpa_status": "needs_negotiation|in_place|under_review",
+    "breach_incidents": "none|previously_reported|under_investigation",
+    "audit_timeline": "immediately|within_3_months|scheduled_date",
+    "ai_use_cases": true,
+    "ai_specific": ["Resume screening", "Performance prediction"]
+  },
+
+  "equity_compensation_specific": {
+    "stock_option_plan_status": "not_established|draft|approved|active",
+    "total_equity_pool_percent": 10,
+    "employee_count": 15,
+    "option_pool_size": 100000,
+    "exercise_price": "needs_409a|have_valuation|dated_2024",
+    "vesting_schedule": "4-year_1-year_cliff|custom",
+    "acceleration_events": "change_of_control|founder_departure",
+    "international_employees": true,
+    "employee_countries": ["Belgium", "Germany", "Netherlands"],
+    "tax_considerations": "belgian_withholding|isa_compliance|us_stock_options"
+  },
+
+  "employment_compliance_specific": {
+    "employment_contracts_status": "all_in_place|partial|needs_standardization",
+    "remote_work_structure": "full_remote|hybrid|office",
+    "employee_locations": ["Brussels", "Antwerp", "Amsterdam"],
+    "contractor_relationships": true,
+    "contractor_count": 3,
+    "employee_categories": {
+      "full_time": 12,
+      "part_time": 2,
+      "contractors": 3
+    },
+    "compliance_concerns": ["classification", "minimum_wage", "working_time_directive"]
+  },
+
+  "saas_contract_specific": {
+    "contract_type": "customer_agreement|vendor_agreement|partnership|license",
+    "counterparty": "Enterprise customer|Vendor|Partner|Investor",
+    "contract_value_eur": 150000,
+    "contract_duration_months": 24,
+    "renewal_terms": "automatic|manual",
+    "payment_terms": "monthly|quarterly|annual",
+    "data_handling": "critical|standard|minimal",
+    "service_level_requirements": true,
+    "sla_uptime_percent": 99.5,
+    "issue_category": ["liability_limits", "indemnification", "termination_rights", "data_protection", "intellectual_property"],
+    "deal_stage": "negotiation|draft|review|execution"
+  },
+
+  "ma_transaction_specific": {
+    "transaction_type": "acquisition_target|acquirer|merger",
+    "target_company_name": "AcquiredCompany Inc.",
+    "expected_transaction_value": 50000000,
+    "transaction_timeline_months": 6,
+    "key_risks": [
+      "IP ownership clarity",
+      "GDPR compliance",
+      "Employment liabilities",
+      "Customer concentration"
+    ],
+    "seller_representation": true,
+    "buyer_representation": false,
+    "data_room_readiness": false,
+    "integration_complexity": "simple|moderate|complex"
+  },
+
+  "ip_protection_specific": {
+    "ip_assets": ["software_code", "patents", "trademarks", "trade_secrets"],
+    "patents_filed": 0,
+    "patents_pending": 2,
+    "trademarks_registered": 1,
+    "open_source_usage": true,
+    "open_source_concerns": ["license_compliance", "derivative_works"],
+    "competitor_threats": false,
+    "confidentiality_agreements": "in_place|needed"
+  },
+
+  "budget_and_timeline": {
+    "budget_type": "fixed_fee|hourly|retainer",
+    "estimated_budget_eur": 25000,
+    "budget_flexibility": "firm|flexible",
+    "ideal_start_date": "2025-11-15",
+    "hard_deadline": "2026-01-31",
+    "stakeholders_count": 3,
+    "decision_timeline_days": 5
+  },
+
+  "special_considerations": {
+    "cultural_diversity": "team_from_multiple_countries|multilingual",
+    "african_diaspora_connection": false,
+    "cross_border_complexity": "high|moderate|low",
+    "language_requirements": ["English", "French"],
+    "prior_legal_counsel": "none|previous_firm|in_house",
+    "relationship_priority": "results_focused|trust_building|cost_conscious"
+  },
+
+  "adaptation_context": {
+    "reason_for_contact": "Referred by existing client|Web search|Investor recommendation|Community connection",
+    "previous_BluePadsLegal_matters": false,
+    "preferred_attorney": "no_preference|prefer_specialist|prefer_partner",
+    "communication_style": "formal|collaborative|direct",
+    "decision_making_pace": "fast|thoughtful|consensus_required"
+  },
+
+  "example_scenarios": {
+    "scenario_1": {
+      "title": "Series A Fundraising in Brussels",
+      "matter_type": "fundraising",
+      "agents_involved": ["Jabari Mwangi", "Adeyemi Oladele", "Nia Kamau", "Amara Okonkwo"],
+      "key_tasks": ["Cap table review", "Equity pool design", "Term sheet negotiation", "Due diligence preparation"]
+    },
+
+    "scenario_2": {
+      "title": "GDPR Compliance Audit",
+      "matter_type": "gdpr_compliance",
+      "agents_involved": ["Zainab Hassan", "Kofi Mensah", "Leila Diallo", "Abasi Nkomo"],
+      "key_tasks": ["Data mapping", "DPA negotiation", "Privacy policy review", "Risk assessment"]
+    },
+
+    "scenario_3": {
+      "title": "International M&A Transaction",
+      "matter_type": "ma_transaction",
+      "agents_involved": ["Adeyemi Oladele", "Thandeka Mthembu", "Kwesi Boateng", "Abasi Nkomo"],
+      "key_tasks": ["Data room preparation", "IP due diligence", "Contract review", "Risk assessment"]
+    },
+
+    "scenario_4": {
+      "title": "SaaS Customer Agreement Negotiation",
+      "matter_type": "saas_agreement",
+      "agents_involved": ["Kwesi Boateng", "Amara Okonkwo", "Leila Diallo"],
+      "key_tasks": ["Contract drafting", "Risk identification", "Negotiation strategy", "Execution"]
+    },
+
+    "scenario_5": {
+      "title": "Equity Compensation Plan Setup",
+      "matter_type": "equity_setup",
+      "agents_involved": ["Nia Kamau", "Jabari Mwangi", "Amara Okonkwo"],
+      "key_tasks": ["409A valuation", "Option pool design", "Plan documentation", "Employee communications"]
+    }
+  }
+}
