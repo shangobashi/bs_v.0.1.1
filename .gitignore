@@ -48,3 +48,5 @@ frontend/build/
 Thumbs.db
 
 nul
+.vercel
+.env*.local

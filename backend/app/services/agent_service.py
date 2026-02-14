@@ -41,6 +41,9 @@ class MultiAPIAgentService:
                 self.gemini_client = genai
             else:
                 self.gemini_client = None
+        except ImportError:
+            print("Google Generative AI library not found (likely deployment optimization). Gemini provider disabled.")
+            self.gemini_client = None
         except Exception as e:
             print(f"Failed to initialize Gemini client: {e}")
             self.gemini_client = None

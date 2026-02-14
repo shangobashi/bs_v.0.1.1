@@ -1,41 +1,19 @@
-from fastapi import FastAPI
-from fastapi.responses import JSONResponse
 import sys
 import os
-import traceback
+
+# Add the parent directory and backend directory to sys.path
+# This allows importing 'app' from the 'backend' folder
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.abspath(os.path.join(current_dir, ".."))
+backend_dir = os.path.join(parent_dir, "backend")
+
+sys.path.append(parent_dir) # For root level imports if any
+sys.path.append(backend_dir) # For 'app.main'
 
 try:
-    # Add the backend directory to sys.path
-    backend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'backend'))
-    sys.path.append(backend_path)
-
     from app.main import app
-
-except Exception as e:
-    # Fallback app to report startup error
-    app = FastAPI()
-    
-    @app.get("/{path:path}")
-    async def catch_all(path: str):
-        # List context to help debug
-        root_files = os.listdir('.') if os.path.exists('.') else []
-        backend_files = []
-        if os.path.exists(backend_path):
-             backend_files = [f for f in os.listdir(backend_path)]
-             
-        return JSONResponse(
-            status_code=500,
-            content={
-                "error": "Backend Startup Failed",
-                "detail": str(e),
-                "traceback": traceback.format_exc(),
-                "debug_info": {
-                    "cwd": os.getcwd(),
-                    "backend_path": backend_path,
-                    "backend_exists": os.path.exists(backend_path),
-                    "root_files": root_files,
-                    "backend_files": backend_files,
-                    "sys_path": sys.path
-                }
-            }
-        )
+except ImportError as e:
+    print(f"Import error: {e}")
+    # Try alternate path if Vercel structure is different
+    sys.path.append(os.path.join(current_dir, "backend"))
+    from app.main import app

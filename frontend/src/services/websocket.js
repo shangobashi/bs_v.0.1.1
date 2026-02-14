@@ -1,6 +1,12 @@
 class WebSocketService {
-  constructor(baseURL = 'ws://localhost:8000/api/v1') {
-    this.baseURL = baseURL;
+  constructor(baseURL) {
+    if (!baseURL) {
+      const apiURL = process.env.REACT_APP_API_BASE_URL || (process.env.NODE_ENV === 'production' ? window.location.origin + '/api/v1' : 'http://localhost:8000/api/v1');
+      // Convert http/https to ws/wss
+      this.baseURL = apiURL.replace(/^http/, 'ws');
+    } else {
+      this.baseURL = baseURL;
+    }
     this.ws = null;
     this.messageHandlers = [];
     this.errorHandlers = [];

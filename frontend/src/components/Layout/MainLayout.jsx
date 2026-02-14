@@ -8,7 +8,7 @@ import './Layout.css';
 const MainLayout = ({ children }) => {
     const { isSidebarOpen, toggleSidebar, closeSidebar } = useSidebar();
     const location = useLocation();
-    const isCleanPage = location.pathname === '/chat';
+
 
     return (
         <div className="nova-layout">
