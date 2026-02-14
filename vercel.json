@@ -9,11 +9,10 @@
             "destination": "/frontend/$1"
         }
     ],
-    "framework": "create-react-app",
     "buildCommand": "cd frontend && npm install && npm run build",
     "outputDirectory": "frontend/build",
     "functions": {
-        "api/*.py": {
+        "api/index.py": {
             "includeFiles": "backend/**"
         }
     }
