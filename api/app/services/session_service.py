@@ -4,8 +4,17 @@ import os
 from pathlib import Path
 from typing import Dict, Any, Optional, List
 
-SESSION_DIR = Path("sessions")
-SESSION_DIR.mkdir(exist_ok=True)
+# Check if running on Vercel (read-only filesystem, except /tmp)
+IS_VERCEL = os.environ.get("VERCEL") == "1"
+if IS_VERCEL:
+    SESSION_DIR = Path("/tmp/sessions")
+else:
+    SESSION_DIR = Path("sessions")
+
+try:
+    SESSION_DIR.mkdir(exist_ok=True, parents=True)
+except Exception as e:
+    print(f"Warning: Could not create session directory {SESSION_DIR}: {e}")
 
 class SessionService:
     """
@@ -57,8 +66,11 @@ class SessionService:
     def _save_session(self, session_id: str):
         """Persist session to disk"""
         if session_id in self.active_sessions:
-            file_path = SESSION_DIR / f"session_{session_id}.json"
-            file_path.write_text(json.dumps(self.active_sessions[session_id], indent=2), encoding='utf-8')
+            try:
+                file_path = SESSION_DIR / f"session_{session_id}.json"
+                file_path.write_text(json.dumps(self.active_sessions[session_id], indent=2), encoding='utf-8')
+            except Exception as e:
+                print(f"Error saving session {session_id}: {e}")
 
 # Global instance
 session_service = SessionService()
