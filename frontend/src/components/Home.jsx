@@ -207,20 +207,20 @@ const Home = () => {
 
                 <div className="pricing-grid">
                     <div className="pricing-card">
-                        <h3>Community</h3>
-                        <div className="pricing-price">{billingCycle === 'monthly' ? '$199' : '$99'}</div>
+                        <h3>Starter</h3>
+                        <div className="pricing-price">{billingCycle === 'monthly' ? '$40' : '$400'}</div>
                         <div style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.5)', marginBottom: '1.5rem' }}>per month</div>
                         <ul className="pricing-features">
                             <li>✓ Free 1 Day Trial</li>
                             <li>✓ 3 Active Agents</li>
                             <li>✓ Basic Documentation</li>
-                            <li>✓ Community Support</li>
+                            <li>✓ Starter Support</li>
                         </ul>
                         <NovaButton variant="ghost">Get Started</NovaButton>
                     </div>
                     <div className="pricing-card highlight">
                         <h3>Professional</h3>
-                        <div className="pricing-price">{billingCycle === 'monthly' ? '$1999' : '$999'}</div>
+                        <div className="pricing-price">{billingCycle === 'monthly' ? '$100' : '$1000'}</div>
                         <div style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.5)', marginBottom: '1.5rem' }}>per month</div>
                         <ul className="pricing-features">
                             <li>✓ 24 Active Agents</li>
@@ -247,9 +247,9 @@ const Home = () => {
             {/* About Section */}
             <section id="about" className="nova-about-section">
                 <div className="about-content">
-                    <h2>About Blue Swarm Labs</h2>
+                    <h2>About Issa Labs</h2>
                     <p>
-                        Blue Swarm Labs centers Afro-centric identity as the competitive advantage for software engineering itself.
+                        Issa Labs centers Afro-centric identity as the competitive advantage for software engineering itself.
                         "I am because we are." In software engineering, this means we code because we're building something that matters to our communities.
                     </p>
                     <p>
