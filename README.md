@@ -26,7 +26,7 @@ Unlike standard chatbot wrappers, this system implements a **multi-agent archite
 *   **Real-time Communication**: Custom WebSocket implementation for low-latency token streaming.
 *   **Design Pattern**: Service-oriented architecture with clear separation of concerns (Core, Services, API, Models).
 *   **AI Integration**: Modular adapter pattern to easily plug in new LLM providers without refactoring core logic.
-*   **Security**: Environment-based configuration, locked-down public execution by default, and runtime API-key configuration disabled unless explicitly enabled for trusted environments.
+*   **Security**: Environment-based configuration, no runtime API-key writes in public deployments, restricted public origins, and capped/rate-limited demo execution so the live portfolio build remains usable without exposing the backend to unbounded abuse.
 
 ### Frontend (React)
 *   **Framework**: React 18 with functional components and Hooks.
@@ -97,6 +97,7 @@ SwarmAgents_WebUI_MVP/
 ## Local Configuration
 
 - Public execution is disabled by default through `PUBLIC_EXECUTION_ENABLED=False`.
+- Public demo guardrails are configured through `PUBLIC_EXECUTION_MAX_TOKENS`, `PUBLIC_EXECUTION_RATE_LIMIT_WINDOW_SECONDS`, and `PUBLIC_EXECUTION_RATE_LIMIT_MAX_REQUESTS`.
 - Runtime API-key configuration is disabled by default through `RUNTIME_KEY_CONFIG_ENABLED=False`.
 - The legacy `.env.local` secret file has been moved out of the repo tree. If you still need it for local-only work, use:
   - `C:\Users\Shango\.codex\memories\launch-secrets\blueswarm.env.local`

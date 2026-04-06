@@ -20,6 +20,9 @@ class Settings(BaseSettings):
     PUBLIC_EXECUTION_ENABLED: bool = False
     RUNTIME_KEY_CONFIG_ENABLED: bool = False
     RUNTIME_KEY_CONFIG_PERSIST_TO_ENV: bool = False
+    PUBLIC_EXECUTION_MAX_TOKENS: int = 1024
+    PUBLIC_EXECUTION_RATE_LIMIT_WINDOW_SECONDS: int = 900
+    PUBLIC_EXECUTION_RATE_LIMIT_MAX_REQUESTS: int = 12
 
     # Database
     DATABASE_URL: Optional[str] = None

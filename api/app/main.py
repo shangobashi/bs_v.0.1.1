@@ -1,10 +1,13 @@
-from fastapi import FastAPI, WebSocket, HTTPException, BackgroundTasks
-from fastapi.middleware.cors import CORSMiddleware
+from collections import defaultdict, deque
 from contextlib import asynccontextmanager
+from fastapi import FastAPI, WebSocket, HTTPException, BackgroundTasks, Request
+from fastapi.middleware.cors import CORSMiddleware
 import json
 import logging
+import time
 from typing import List, Dict, Any
 from pathlib import Path
+from threading import Lock
 
 from app.core.config import settings
 from app.schemas.agent import AgentRequest, ModelProvider, ApiKeyRequest
@@ -31,13 +34,71 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+allowed_origins = [
+    origin.strip()
+    for origin in settings.ALLOWED_ORIGINS.split(",")
+    if origin.strip()
+]
+
+if not allowed_origins:
+    allowed_origins = ["http://localhost:3000", "http://127.0.0.1:3000"]
+
+rate_limit_windows = defaultdict(deque)
+rate_limit_lock = Lock()
+
+
+def ensure_public_execution_enabled() -> None:
+    if not settings.PUBLIC_EXECUTION_ENABLED:
+        raise HTTPException(
+            status_code=403,
+            detail="BlueSwarm public execution is disabled on this deployment. Request a private preview to access live agents.",
+        )
+
+
+def get_client_address(headers: Dict[str, str], fallback: str | None) -> str:
+    forwarded_for = headers.get("x-forwarded-for", "")
+    if forwarded_for:
+        return forwarded_for.split(",")[0].strip()
+
+    real_ip = headers.get("x-real-ip", "")
+    if real_ip:
+        return real_ip.strip()
+
+    return fallback or "unknown"
+
+
+def enforce_rate_limit(client_address: str) -> None:
+    window_seconds = max(settings.PUBLIC_EXECUTION_RATE_LIMIT_WINDOW_SECONDS, 1)
+    max_requests = max(settings.PUBLIC_EXECUTION_RATE_LIMIT_MAX_REQUESTS, 1)
+    now = time.time()
+
+    with rate_limit_lock:
+        history = rate_limit_windows[client_address]
+        while history and now - history[0] > window_seconds:
+            history.popleft()
+
+        if len(history) >= max_requests:
+            raise HTTPException(
+                status_code=429,
+                detail="BlueSwarm has hit its public demo rate limit for this IP. Try again shortly.",
+            )
+
+        history.append(now)
+
+
+def clamp_request_limits(agent_request: AgentRequest) -> AgentRequest:
+    if agent_request.max_tokens > settings.PUBLIC_EXECUTION_MAX_TOKENS:
+        agent_request.max_tokens = settings.PUBLIC_EXECUTION_MAX_TOKENS
+    return agent_request
+
+
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=allowed_origins,
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type"],
 )
 
 # ============================================================================
@@ -63,7 +124,10 @@ async def status():
             "openai": agent_service.openai_client is not None,
             "gemini": agent_service.gemini_client is not None
         },
-        "max_concurrent_agents": settings.MAX_CONCURRENT_AGENTS
+        "max_concurrent_agents": settings.MAX_CONCURRENT_AGENTS,
+        "public_execution_enabled": settings.PUBLIC_EXECUTION_ENABLED,
+        "runtime_key_config_enabled": settings.RUNTIME_KEY_CONFIG_ENABLED,
+        "allowed_origins": allowed_origins,
     }
 
 # ============================================================================
@@ -71,10 +135,17 @@ async def status():
 # ============================================================================
 
 @app.post(f"{settings.API_PREFIX}/agent/execute")
-async def execute_agent(request: AgentRequest):
+async def execute_agent(agent_request: AgentRequest, http_request: Request):
     """Execute agent with specified provider"""
+    ensure_public_execution_enabled()
+    enforce_rate_limit(
+        get_client_address(
+            dict(http_request.headers),
+            getattr(http_request.client, "host", None),
+        )
+    )
     try:
-        response = await agent_service.execute_agent(request)
+        response = await agent_service.execute_agent(clamp_request_limits(agent_request))
         return response
     except Exception as e:
         logger.error(f"Agent execution error: {str(e)}")
@@ -83,13 +154,37 @@ async def execute_agent(request: AgentRequest):
 @app.websocket(f"{settings.API_PREFIX}/agent/stream")
 async def stream_agent(websocket: WebSocket):
     """WebSocket endpoint for streaming agent responses"""
+    if not settings.PUBLIC_EXECUTION_ENABLED:
+        await websocket.accept()
+        await websocket.send_json({
+            "type": "error",
+            "error": "BlueSwarm public execution is disabled on this deployment. Request a private preview to access live agents.",
+        })
+        await websocket.close(code=4403)
+        return
+
     await websocket.accept()
     try:
         while True:
             # Receive request from client
             data = await websocket.receive_text()
             request_data = json.loads(data)
-            request = AgentRequest(**request_data)
+            try:
+                enforce_rate_limit(
+                    get_client_address(
+                        dict(websocket.headers),
+                        getattr(websocket.client, "host", None),
+                    )
+                )
+            except HTTPException as error:
+                await websocket.send_json({
+                    "type": "error",
+                    "error": error.detail,
+                })
+                await websocket.close(code=4429)
+                return
+
+            request = clamp_request_limits(AgentRequest(**request_data))
 
             # Send start message
             await websocket.send_json({
@@ -138,6 +233,12 @@ async def stream_agent(websocket: WebSocket):
 @app.post(f"{settings.API_PREFIX}/config/set-api-key")
 async def set_api_key(request: ApiKeyRequest):
     """Set API key for a provider (SECURE - use environment variables in production)"""
+    if not settings.RUNTIME_KEY_CONFIG_ENABLED:
+        raise HTTPException(
+            status_code=403,
+            detail="Runtime API key configuration is disabled on this deployment. Configure provider keys through environment variables instead.",
+        )
+
     provider = request.provider.lower()
     api_key = request.api_key
 
@@ -164,25 +265,19 @@ async def set_api_key(request: ApiKeyRequest):
     # Re-initialize clients
     agent_service._init_clients()
 
-    # Persist to .env file
-    try:
-        env_path = Path(".env")
-        env_lines = []
-        if env_path.exists():
-            env_lines = env_path.read_text().splitlines()
-        
-        # Remove existing key if present
-        env_lines = [line for line in env_lines if not line.startswith(f"{env_var}=")]
-        
-        # Append new key
-        env_lines.append(f"{env_var}={api_key}")
-        
-        # Write back
-        env_path.write_text("\n".join(env_lines))
-        logger.info(f"Persisted {env_var} to .env file")
-    except Exception as e:
-        logger.error(f"Failed to persist API key to .env: {e}")
-        # Don't fail the request, just log error
+    if settings.RUNTIME_KEY_CONFIG_PERSIST_TO_ENV:
+        try:
+            env_path = Path(".env")
+            env_lines = []
+            if env_path.exists():
+                env_lines = env_path.read_text().splitlines()
+
+            env_lines = [line for line in env_lines if not line.startswith(f"{env_var}=")]
+            env_lines.append(f"{env_var}={api_key}")
+            env_path.write_text("\n".join(env_lines))
+            logger.info(f"Persisted {env_var} to .env file")
+        except Exception as e:
+            logger.error(f"Failed to persist API key to .env: {e}")
 
     return {"status": "success", "provider": provider}
 
@@ -401,6 +496,7 @@ if __name__ == "__main__":
 @app.get(f"{settings.API_PREFIX}/debug/swarm-test")
 async def debug_swarm_test():
     """Debug endpoint to test swarm lookups"""
+    ensure_public_execution_enabled()
     from app.agents_data import get_agents_by_swarm
     
     test_results = {
@@ -437,6 +533,7 @@ async def process_griot_questionnaire(request: dict):
     - activation_plan: Detailed explanation of why each swarm was chosen
     - next_steps: Instructions for user on what happens next
     """
+    ensure_public_execution_enabled()
     from typing import List, Dict, Any
     
     # Map primary need to swarm
@@ -556,6 +653,7 @@ async def process_griot_questionnaire(request: dict):
 @app.get(f"{settings.API_PREFIX}/session/{{session_id}}")
 async def get_session(session_id: str):
     """Get session details including artifacts"""
+    ensure_public_execution_enabled()
     session = session_service.get_session(session_id)
     if not session:
         raise HTTPException(status_code=404, detail="Session not found")
@@ -598,4 +696,3 @@ Your activation begins now.
     return message.strip()
 
 
-import time

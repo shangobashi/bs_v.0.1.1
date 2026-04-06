@@ -16,6 +16,13 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "your-secret-key-change-in-production"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    ALLOWED_ORIGINS: str = "http://localhost:3000,http://127.0.0.1:3000"
+    PUBLIC_EXECUTION_ENABLED: bool = False
+    RUNTIME_KEY_CONFIG_ENABLED: bool = False
+    RUNTIME_KEY_CONFIG_PERSIST_TO_ENV: bool = False
+    PUBLIC_EXECUTION_MAX_TOKENS: int = 1024
+    PUBLIC_EXECUTION_RATE_LIMIT_WINDOW_SECONDS: int = 900
+    PUBLIC_EXECUTION_RATE_LIMIT_MAX_REQUESTS: int = 12
 
     # Database
     DATABASE_URL: Optional[str] = None

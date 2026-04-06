@@ -4,6 +4,7 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || (process.env.NODE_ENV
 
 class AgentAPI {
   constructor(baseURL = API_BASE_URL) {
+    this.baseURL = baseURL;
     this.client = axios.create({
       baseURL,
       headers: {

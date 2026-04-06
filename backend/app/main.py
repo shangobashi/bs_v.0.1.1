@@ -1,10 +1,13 @@
-from fastapi import FastAPI, WebSocket, HTTPException, BackgroundTasks
-from fastapi.middleware.cors import CORSMiddleware
+from collections import defaultdict, deque
 from contextlib import asynccontextmanager
+from fastapi import FastAPI, WebSocket, HTTPException, BackgroundTasks, Request
+from fastapi.middleware.cors import CORSMiddleware
 import json
 import logging
+import time
 from typing import List, Dict, Any
 from pathlib import Path
+from threading import Lock
 
 from app.core.config import settings
 from app.schemas.agent import AgentRequest, ModelProvider, ApiKeyRequest
@@ -40,6 +43,9 @@ allowed_origins = [
 if not allowed_origins:
     allowed_origins = ["http://localhost:3000", "http://127.0.0.1:3000"]
 
+rate_limit_windows = defaultdict(deque)
+rate_limit_lock = Lock()
+
 
 def ensure_public_execution_enabled() -> None:
     if not settings.PUBLIC_EXECUTION_ENABLED:
@@ -47,6 +53,43 @@ def ensure_public_execution_enabled() -> None:
             status_code=403,
             detail="BlueSwarm public execution is disabled on this deployment. Request a private preview to access live agents.",
         )
+
+
+def get_client_address(headers: Dict[str, str], fallback: str | None) -> str:
+    forwarded_for = headers.get("x-forwarded-for", "")
+    if forwarded_for:
+        return forwarded_for.split(",")[0].strip()
+
+    real_ip = headers.get("x-real-ip", "")
+    if real_ip:
+        return real_ip.strip()
+
+    return fallback or "unknown"
+
+
+def enforce_rate_limit(client_address: str) -> None:
+    window_seconds = max(settings.PUBLIC_EXECUTION_RATE_LIMIT_WINDOW_SECONDS, 1)
+    max_requests = max(settings.PUBLIC_EXECUTION_RATE_LIMIT_MAX_REQUESTS, 1)
+    now = time.time()
+
+    with rate_limit_lock:
+        history = rate_limit_windows[client_address]
+        while history and now - history[0] > window_seconds:
+            history.popleft()
+
+        if len(history) >= max_requests:
+            raise HTTPException(
+                status_code=429,
+                detail="BlueSwarm has hit its public demo rate limit for this IP. Try again shortly.",
+            )
+
+        history.append(now)
+
+
+def clamp_request_limits(agent_request: AgentRequest) -> AgentRequest:
+    if agent_request.max_tokens > settings.PUBLIC_EXECUTION_MAX_TOKENS:
+        agent_request.max_tokens = settings.PUBLIC_EXECUTION_MAX_TOKENS
+    return agent_request
 
 # Add CORS middleware
 app.add_middleware(
@@ -91,11 +134,17 @@ async def status():
 # ============================================================================
 
 @app.post(f"{settings.API_PREFIX}/agent/execute")
-async def execute_agent(request: AgentRequest):
+async def execute_agent(agent_request: AgentRequest, http_request: Request):
     """Execute agent with specified provider"""
     ensure_public_execution_enabled()
+    enforce_rate_limit(
+        get_client_address(
+            dict(http_request.headers),
+            getattr(http_request.client, "host", None),
+        )
+    )
     try:
-        response = await agent_service.execute_agent(request)
+        response = await agent_service.execute_agent(clamp_request_limits(agent_request))
         return response
     except Exception as e:
         logger.error(f"Agent execution error: {str(e)}")
@@ -119,7 +168,22 @@ async def stream_agent(websocket: WebSocket):
             # Receive request from client
             data = await websocket.receive_text()
             request_data = json.loads(data)
-            request = AgentRequest(**request_data)
+            try:
+                enforce_rate_limit(
+                    get_client_address(
+                        dict(websocket.headers),
+                        getattr(websocket.client, "host", None),
+                    )
+                )
+            except HTTPException as error:
+                await websocket.send_json({
+                    "type": "error",
+                    "error": error.detail,
+                })
+                await websocket.close(code=4429)
+                return
+
+            request = clamp_request_limits(AgentRequest(**request_data))
 
             # Send start message
             await websocket.send_json({
@@ -631,4 +695,3 @@ Your activation begins now.
     return message.strip()
 
 
-import time
