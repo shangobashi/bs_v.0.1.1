@@ -78,6 +78,7 @@ const AgentChat = () => {
   }, [agents]);
 
   const location = useLocation();
+  const executionLocked = status ? status.public_execution_enabled === false : false;
 
   useEffect(() => {
     if (location.state?.agentId && agents.length > 0) {
@@ -399,7 +400,7 @@ const AgentChat = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!message.trim()) return;
+    if (!message.trim() || executionLocked) return;
 
     const userMessage = message;
     setMessage('');
@@ -413,6 +414,18 @@ const AgentChat = () => {
 
   const executeAgentRequest = async (userMessage, isSystemHandoff = false) => {
     try {
+      if (executionLocked) {
+        setMessages((prev) => [
+          ...prev,
+          {
+            type: 'system',
+            content: 'BlueSwarm public execution is currently disabled on this deployment. Request a private preview to access live agent runs.',
+          },
+        ]);
+        setLoading(false);
+        return;
+      }
+
       let currentAgent = selectedAgent;
 
       // Safety check: Ensure we have the system prompt
@@ -478,21 +491,6 @@ const AgentChat = () => {
                   placeholder="Select an Agent"
                   style={{ height: '38px', fontSize: '0.9rem' }}
                   options={agents.map(agent => {
-                    // Helper to format agent name sparsely
-                    const formatAgentName = (name) => {
-                      if (!name) return '';
-                      let formatted = name;
-                      formatted = formatted.replace(/BluePadsResearch_AgentSwarm_ClaudeCLI/g, 'BP Research');
-                      formatted = formatted.replace(/BluePadsGrowth_AgentSwarm_ClaudeCLI/g, 'BP Growth');
-                      formatted = formatted.replace(/BluePadsGlobal/g, 'BP Global');
-
-                      const nameParts = formatted.split(' ');
-                      if (nameParts.length > 1 && !nameParts[0].includes('.')) {
-                        formatted = `${nameParts[0][0]}.${nameParts.slice(1).join(' ')}`;
-                      }
-                      return formatted;
-                    };
-
                     const formatSwarmName = (swarm) => {
                       if (!swarm) return '';
                       let formatted = swarm;
@@ -677,6 +675,23 @@ const AgentChat = () => {
 
       {/* Main Chat Area */}
       <GlassCard className="chat-area" style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', padding: 0 }}>
+        {executionLocked && (
+          <div style={{
+            margin: '1.5rem',
+            padding: '1rem 1.25rem',
+            border: '1px solid rgba(255, 184, 0, 0.35)',
+            background: 'rgba(255, 184, 0, 0.08)',
+            color: 'var(--text-primary)',
+            borderRadius: '1rem'
+          }}>
+            <strong style={{ display: 'block', marginBottom: '0.35rem' }}>Private preview</strong>
+            <span style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
+              This public deployment is intentionally locked down so the agent backend is not exposed as an open execution surface.
+              Reach out for a guided demo or private access.
+            </span>
+          </div>
+        )}
+
         {/* Griot / Activation Plan Logic */}
         {selectedAgent && selectedAgent.id === 'griot-000' && !griotActivationPlan && (
           <div style={{ padding: '2rem', overflowY: 'auto' }}>
@@ -742,7 +757,7 @@ const AgentChat = () => {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Type your message..."
-                  disabled={loading}
+                  disabled={loading || executionLocked}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault();
@@ -751,8 +766,8 @@ const AgentChat = () => {
                   }}
                   style={{ flex: 1 }}
                 />
-                <NovaButton type="submit" variant="primary" disabled={loading || !message.trim()} style={{ minWidth: '100px' }}>
-                  Send
+                <NovaButton type="submit" variant="primary" disabled={loading || executionLocked || !message.trim()} style={{ minWidth: '100px' }}>
+                  {executionLocked ? 'Preview Only' : 'Send'}
                 </NovaButton>
               </form>
             </div>

@@ -1,14 +1,11 @@
 import React from 'react';
 import Sidebar from './Sidebar';
 import { useSidebar } from '../../context/SidebarContext';
-import { useLocation } from 'react-router-dom';
 import SpaceBackground from './SpaceBackground';
 import './Layout.css';
 
 const MainLayout = ({ children }) => {
     const { isSidebarOpen, toggleSidebar, closeSidebar } = useSidebar();
-    const location = useLocation();
-
 
     return (
         <div className="nova-layout">

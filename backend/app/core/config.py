@@ -13,9 +13,13 @@ class Settings(BaseSettings):
     API_PREFIX: str = "/api/v1"
 
     # Security
-    SECRET_KEY: str = "your-secret-key-change-in-production"
+    SECRET_KEY: Optional[str] = None
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    ALLOWED_ORIGINS: str = "http://localhost:3000,http://127.0.0.1:3000"
+    PUBLIC_EXECUTION_ENABLED: bool = False
+    RUNTIME_KEY_CONFIG_ENABLED: bool = False
+    RUNTIME_KEY_CONFIG_PERSIST_TO_ENV: bool = False
 
     # Database
     DATABASE_URL: Optional[str] = None

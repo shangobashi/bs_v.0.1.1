@@ -31,13 +31,30 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+allowed_origins = [
+    origin.strip()
+    for origin in settings.ALLOWED_ORIGINS.split(",")
+    if origin.strip()
+]
+
+if not allowed_origins:
+    allowed_origins = ["http://localhost:3000", "http://127.0.0.1:3000"]
+
+
+def ensure_public_execution_enabled() -> None:
+    if not settings.PUBLIC_EXECUTION_ENABLED:
+        raise HTTPException(
+            status_code=403,
+            detail="BlueSwarm public execution is disabled on this deployment. Request a private preview to access live agents.",
+        )
+
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=allowed_origins,
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type"],
 )
 
 # ============================================================================
@@ -63,7 +80,10 @@ async def status():
             "openai": agent_service.openai_client is not None,
             "gemini": agent_service.gemini_client is not None
         },
-        "max_concurrent_agents": settings.MAX_CONCURRENT_AGENTS
+        "max_concurrent_agents": settings.MAX_CONCURRENT_AGENTS,
+        "public_execution_enabled": settings.PUBLIC_EXECUTION_ENABLED,
+        "runtime_key_config_enabled": settings.RUNTIME_KEY_CONFIG_ENABLED,
+        "allowed_origins": allowed_origins,
     }
 
 # ============================================================================
@@ -73,6 +93,7 @@ async def status():
 @app.post(f"{settings.API_PREFIX}/agent/execute")
 async def execute_agent(request: AgentRequest):
     """Execute agent with specified provider"""
+    ensure_public_execution_enabled()
     try:
         response = await agent_service.execute_agent(request)
         return response
@@ -83,6 +104,15 @@ async def execute_agent(request: AgentRequest):
 @app.websocket(f"{settings.API_PREFIX}/agent/stream")
 async def stream_agent(websocket: WebSocket):
     """WebSocket endpoint for streaming agent responses"""
+    if not settings.PUBLIC_EXECUTION_ENABLED:
+        await websocket.accept()
+        await websocket.send_json({
+            "type": "error",
+            "error": "BlueSwarm public execution is disabled on this deployment. Request a private preview to access live agents.",
+        })
+        await websocket.close(code=4403)
+        return
+
     await websocket.accept()
     try:
         while True:
@@ -138,6 +168,12 @@ async def stream_agent(websocket: WebSocket):
 @app.post(f"{settings.API_PREFIX}/config/set-api-key")
 async def set_api_key(request: ApiKeyRequest):
     """Set API key for a provider (SECURE - use environment variables in production)"""
+    if not settings.RUNTIME_KEY_CONFIG_ENABLED:
+        raise HTTPException(
+            status_code=403,
+            detail="Runtime API key configuration is disabled on this deployment. Configure provider keys through environment variables instead.",
+        )
+
     provider = request.provider.lower()
     api_key = request.api_key
 
@@ -164,25 +200,19 @@ async def set_api_key(request: ApiKeyRequest):
     # Re-initialize clients
     agent_service._init_clients()
 
-    # Persist to .env file
-    try:
-        env_path = Path(".env")
-        env_lines = []
-        if env_path.exists():
-            env_lines = env_path.read_text().splitlines()
-        
-        # Remove existing key if present
-        env_lines = [line for line in env_lines if not line.startswith(f"{env_var}=")]
-        
-        # Append new key
-        env_lines.append(f"{env_var}={api_key}")
-        
-        # Write back
-        env_path.write_text("\n".join(env_lines))
-        logger.info(f"Persisted {env_var} to .env file")
-    except Exception as e:
-        logger.error(f"Failed to persist API key to .env: {e}")
-        # Don't fail the request, just log error
+    if settings.RUNTIME_KEY_CONFIG_PERSIST_TO_ENV:
+        try:
+            env_path = Path(".env")
+            env_lines = []
+            if env_path.exists():
+                env_lines = env_path.read_text().splitlines()
+
+            env_lines = [line for line in env_lines if not line.startswith(f"{env_var}=")]
+            env_lines.append(f"{env_var}={api_key}")
+            env_path.write_text("\n".join(env_lines))
+            logger.info(f"Persisted {env_var} to .env file")
+        except Exception as e:
+            logger.error(f"Failed to persist API key to .env: {e}")
 
     return {"status": "success", "provider": provider}
 
@@ -401,6 +431,7 @@ if __name__ == "__main__":
 @app.get(f"{settings.API_PREFIX}/debug/swarm-test")
 async def debug_swarm_test():
     """Debug endpoint to test swarm lookups"""
+    ensure_public_execution_enabled()
     from app.agents_data import get_agents_by_swarm
     
     test_results = {
@@ -437,6 +468,7 @@ async def process_griot_questionnaire(request: dict):
     - activation_plan: Detailed explanation of why each swarm was chosen
     - next_steps: Instructions for user on what happens next
     """
+    ensure_public_execution_enabled()
     from typing import List, Dict, Any
     
     # Map primary need to swarm
@@ -556,6 +588,7 @@ async def process_griot_questionnaire(request: dict):
 @app.get(f"{settings.API_PREFIX}/session/{{session_id}}")
 async def get_session(session_id: str):
     """Get session details including artifacts"""
+    ensure_public_execution_enabled()
     session = session_service.get_session(session_id)
     if not session:
         raise HTTPException(status_code=404, detail="Session not found")

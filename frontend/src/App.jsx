@@ -12,6 +12,8 @@ import MainLayout from './components/Layout/MainLayout';
 
 import Home from './components/Home';
 
+const runtimeKeyConfigEnabled = process.env.REACT_APP_RUNTIME_KEY_CONFIG_ENABLED === 'true';
+
 function App() {
   return (
     <ThemeProvider>
@@ -22,7 +24,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/chat" element={<AgentChat />} />
               <Route path="/swarms" element={<SwarmSelector />} />
-              <Route path="/settings" element={<ApiKeyManager />} />
+              {runtimeKeyConfigEnabled && <Route path="/settings" element={<ApiKeyManager />} />}
             </Routes>
           </MainLayout>
         </Router>

@@ -137,4 +137,6 @@ class AgentAPI {
   }
 }
 
-export default new AgentAPI();
+const agentAPI = new AgentAPI();
+
+export default agentAPI;

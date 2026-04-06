@@ -32,6 +32,10 @@ const Home = () => {
 
                 <div className="hero-content-centered">
                     <h1>Empathetic AI for a<br />Human-Centric World</h1>
+                    <p style={{ color: 'rgba(255,255,255,0.72)', maxWidth: '720px', margin: '1rem auto 0', lineHeight: 1.6 }}>
+                        BlueSwarm is currently presented as a controlled preview. The public deployment showcases the system design,
+                        agent structure, and product direction while live execution remains intentionally gated.
+                    </p>
 
                     <div className="trusted-by">
                         <span>TRUSTED BY INDUSTRY LEADERS</span>
