@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import json
 import logging
 import time
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from pathlib import Path
 from threading import Lock
 
@@ -55,7 +55,7 @@ def ensure_public_execution_enabled() -> None:
         )
 
 
-def get_client_address(headers: Dict[str, str], fallback: str | None) -> str:
+def get_client_address(headers: Dict[str, str], fallback: Optional[str]) -> str:
     forwarded_for = headers.get("x-forwarded-for", "")
     if forwarded_for:
         return forwarded_for.split(",")[0].strip()
