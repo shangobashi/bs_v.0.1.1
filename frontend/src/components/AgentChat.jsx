@@ -11,6 +11,10 @@ import NovaInput from './Nova/NovaInput';
 import GriotQuestionnaire from './GriotQuestionnaire';
 import ArtifactViewer from './ArtifactViewer';
 
+const STREAMING_SUPPORTED =
+  process.env.NODE_ENV !== 'production' ||
+  process.env.REACT_APP_ENABLE_STREAMING === 'true';
+
 const AgentChat = () => {
 
   const [provider, setProvider] = useState(() => {
@@ -31,7 +35,7 @@ const AgentChat = () => {
   const [message, setMessage] = useState('');
 
   const [loading, setLoading] = useState(false);
-  const [useStreaming, setUseStreaming] = useState(true);
+  const [useStreaming, setUseStreaming] = useState(STREAMING_SUPPORTED);
   const [wsConnected, setWsConnected] = useState(false);
   const [status, setStatus] = useState(null);
   const [agents, setAgents] = useState([]);
@@ -316,6 +320,12 @@ const AgentChat = () => {
   };
 
   const initializeWebSocket = async () => {
+    if (!STREAMING_SUPPORTED) {
+      setUseStreaming(false);
+      setWsConnected(false);
+      return;
+    }
+
     try {
       const apiBaseURL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8005/api/v1';
       const wsBaseURL = apiBaseURL.replace('http://', 'ws://').replace('https://', 'wss://');
