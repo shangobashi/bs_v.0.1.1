@@ -1,5 +1,7 @@
-from pydantic_settings import BaseSettings
 from typing import Optional
+
+from pydantic import field_validator
+from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     """Application settings from environment variables"""
@@ -37,6 +39,22 @@ class Settings(BaseSettings):
     # Agent Configuration
     MAX_CONCURRENT_AGENTS: int = 10
     AGENT_TIMEOUT_SECONDS: int = 300
+
+    @field_validator(
+        "PUBLIC_EXECUTION_ENABLED",
+        "RUNTIME_KEY_CONFIG_ENABLED",
+        "RUNTIME_KEY_CONFIG_PERSIST_TO_ENV",
+        mode="before",
+    )
+    @classmethod
+    def normalize_bool_env(cls, value):
+        if isinstance(value, str):
+            normalized = value.strip().lower()
+            if normalized in {"1", "true", "yes", "on"}:
+                return True
+            if normalized in {"0", "false", "no", "off"}:
+                return False
+        return value
 
     class Config:
         env_file = ".env"

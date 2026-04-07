@@ -120,9 +120,6 @@ class AgentLoader:
                 print(f"DEBUG: Could not extract name from {file_path.name}")
                 return None
             role = self._extract_role_from_content(content)
-            if "Zainab" in name:
-                with open("debug_sections.txt", "a") as f:
-                    f.write(f"DEBUG: Sections for {name}: {list(sections.keys())}\n")
             print(f"DEBUG: Loaded {name} from {file_path.name} with role: {role}")
 
         # Generate agent ID
